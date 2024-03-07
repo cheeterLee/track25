@@ -32,7 +32,9 @@ export async function signup(
     const salt = randomBytes(32);
 
     // const hashedPassword = await new Argon2id().hash(password);
-    const hashedPassword = String(argon2id(password, salt, { t: 2, m: 65536, p: 1 }));
+    const hashedPassword = String(
+        argon2id(password, salt, { t: 2, m: 65536, p: 1 }),
+    );
     const userId = generateId(15);
 
     await db.insert(user).values({
@@ -92,10 +94,12 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
     }
 
     const validPassword = () => {
-        const hashedPassword = String(argon2id(password, 'salt', { t: 2, m: 65536, p: 1 }));
-        return hashedPassword === existedUser.hashed_password
-    }
-    
+        const hashedPassword = String(
+            argon2id(password, 'salt', { t: 2, m: 65536, p: 1 }),
+        );
+        return hashedPassword === existedUser.hashed_password;
+    };
+
     if (!validPassword) {
         return {
             error: 'Incorrect password',
