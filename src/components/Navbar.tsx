@@ -1,27 +1,19 @@
 import ThemeToggle from './ThemeToggle';
 import LogoWrapper from './LogoWrapper';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import AuthForm from './AuthForm';
-import { login, logout, signup } from '@/lib/authActions';
+import { logout } from '@/lib/authActions';
 import { validateRequest } from '@/lib/auth';
-import { User } from 'lucide-react';
+import { User, Menu } from 'lucide-react';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from '@/components/ui/drawer';
+import AuthModal from './AuthModal';
 
 export default async function Navbar() {
     const { user } = await validateRequest();
@@ -29,110 +21,56 @@ export default async function Navbar() {
     return (
         <div className='flex h-[100px] w-full items-center justify-between border-2 border-pink-300 px-1 md:px-6 lg:px-40'>
             <LogoWrapper />
-            <div className='flex items-center gap-2'>
+            <Drawer>
+                <DrawerTrigger>
+                    <Button
+                        size='icon'
+                        variant='outline'
+                        className='block flex h-8 w-8 items-center justify-center p-2 md:hidden'
+                        // asChild to prevent hydration error caused by nested button tags
+                        asChild
+                    >
+                        <Menu />
+                    </Button>
+                </DrawerTrigger>
+                <DrawerContent className='h-[80vh]'>
+                    <DrawerHeader>
+                        <DrawerTitle>Menu</DrawerTitle>
+                    </DrawerHeader>
+                    {!user ? (
+                        <div className='flex items-center justify-center'>
+                            <AuthModal />
+                        </div>
+                    ) : (
+                        <div className='flex flex-col items-center gap-10'>
+                            <div className='flex items-center gap-3'>
+                                <User />
+                                <span className='text-md'>{user.username}</span>
+                            </div>
+                            <DrawerClose>
+                                <AuthForm action={logout}>
+                                    <Button variant='destructive'>
+                                        Logout
+                                    </Button>
+                                </AuthForm>
+                            </DrawerClose>
+                        </div>
+                    )}
+                    <div className='mt-10 flex flex-col justify-center gap-10'>
+                        <div className='flex h-full w-full items-center justify-center gap-3'>
+                            <span>theme: </span>
+                            <ThemeToggle />
+                        </div>
+                        <DrawerClose>
+                            <Button className='mt-60'>close</Button>
+                        </DrawerClose>
+                    </div>
+                </DrawerContent>
+            </Drawer>
+
+            <div className='hidden items-center gap-2 md:block md:flex'>
                 {!user ? (
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button>Login/Signup</Button>
-                        </DialogTrigger>
-                        <DialogContent className='w-[325px] md:min-w-[40vw]'>
-                            <DialogHeader></DialogHeader>
-                            <Tabs defaultValue='login' className='max-w-full'>
-                                <TabsList className='grid w-full grid-cols-2'>
-                                    <TabsTrigger value='login'>
-                                        Login
-                                    </TabsTrigger>
-                                    <TabsTrigger value='signup'>
-                                        Signup
-                                    </TabsTrigger>
-                                </TabsList>
-                                <TabsContent value='login'>
-                                    <AuthForm action={login}>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Login</CardTitle>
-                                                <CardDescription>
-                                                    Sign in to an account
-                                                </CardDescription>
-                                            </CardHeader>
-                                            <CardContent className='space-y-2'>
-                                                <div className='space-y-1'>
-                                                    <Label htmlFor='username'>
-                                                        Username:
-                                                    </Label>
-                                                    <Input
-                                                        id='username'
-                                                        name='username'
-                                                        defaultValue=''
-                                                    />
-                                                </div>
-                                                <div className='space-y-1'>
-                                                    <Label htmlFor='password'>
-                                                        Password:
-                                                    </Label>
-                                                    <Input
-                                                        id='password'
-                                                        name='password'
-                                                        defaultValue=''
-                                                    />
-                                                </div>
-                                            </CardContent>
-                                            <CardFooter>
-                                                <Button>Login</Button>
-                                            </CardFooter>
-                                        </Card>
-                                    </AuthForm>
-                                </TabsContent>
-                                <TabsContent value='signup'>
-                                    <AuthForm action={signup}>
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Signup</CardTitle>
-                                                <CardDescription>
-                                                    Register a new account
-                                                </CardDescription>
-                                            </CardHeader>
-                                            <CardContent className='space-y-2'>
-                                                <div className='space-y-1'>
-                                                    <Label htmlFor='username'>
-                                                        Username:
-                                                    </Label>
-                                                    <Input
-                                                        id='username'
-                                                        name='username'
-                                                        type='username'
-                                                    />
-                                                </div>
-                                                <div className='space-y-1'>
-                                                    <Label htmlFor='password'>
-                                                        Password
-                                                    </Label>
-                                                    <Input
-                                                        id='password'
-                                                        name='password'
-                                                        type='password'
-                                                    />
-                                                </div>
-                                                <div className='space-y-1'>
-                                                    <Label htmlFor='confirmPassword'>
-                                                        Confirm Password:
-                                                    </Label>
-                                                    <Input
-                                                        id='confirmPassword'
-                                                        name='confirmPassword'
-                                                        type='password'
-                                                    />
-                                                </div>
-                                            </CardContent>
-                                            <CardFooter>
-                                                <Button>Sign up</Button>
-                                            </CardFooter>
-                                        </Card>
-                                    </AuthForm>
-                                </TabsContent>
-                            </Tabs>
-                        </DialogContent>
-                    </Dialog>
+                    <AuthModal />
                 ) : (
                     <div className='flex items-center gap-1'>
                         <User />
