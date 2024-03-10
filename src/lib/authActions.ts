@@ -4,37 +4,61 @@ import { db } from '@/db';
 import { user } from '@/db/schema';
 import { lucia, validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-// import { Argon2id } from 'oslo/password';
-import { argon2id } from '@noble/hashes/argon2';
-import { randomBytes } from '@noble/hashes/utils';
+import { Argon2id } from 'oslo/password';
+// import { argon2id } from '@noble/hashes/argon2';
+// import { randomBytes } from '@noble/hashes/utils';
 import { generateId } from 'lucia';
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
 interface ActionResult {
-    error: string;
+    success: boolean;
+    message: string;
 }
 
 export async function signup(
     _: any,
     formData: FormData,
 ): Promise<ActionResult> {
-    const username = formData.get('username');
-    const password = formData.get('password')!;
+    const schema = z.object({
+        username: z.string().min(2),
+        password: z.string().min(6),
+        confirmPassword: z.string().min(6),
+    });
 
-    if (!username) {
-        return { error: 'null user' };
+    const parse = schema.safeParse({
+        username: formData.get('username'),
+        password: formData.get('password'),
+        confirmPassword: formData.get('confirmPassword'),
+    });
+
+    if (!parse.success) {
+        return { message: 'error in form fields', success: false };
     }
 
-    if (typeof password != 'string') {
-        return { error: 'invalid password type' };
+    const { username, password, confirmPassword } = parse.data;
+
+    if (username.length < 2) {
+        return {
+            message: 'username must be 2 characters long',
+            success: false,
+        };
     }
 
-    const salt = randomBytes(32);
+    if (password !== confirmPassword) {
+        return {
+            message: 'password must equal to confirm password',
+            success: false,
+        };
+    }
 
-    // const hashedPassword = await new Argon2id().hash(password);
-    const hashedPassword = String(
-        argon2id(password, salt, { t: 2, m: 65536, p: 1 }),
-    );
+    // const salt = randomBytes(32);
+
+    const hashedPassword = await new Argon2id().hash(password);
+    // const hashedPassword = String(
+    //     argon2id(password, salt, { t: 2, m: 65536, p: 1 }),
+    // );
+
     const userId = generateId(15);
 
     await db.insert(user).values({
@@ -58,7 +82,8 @@ export async function logout(): Promise<ActionResult> {
     const { session } = await validateRequest();
     if (!session) {
         return {
-            error: 'Unauthorized',
+            success: false,
+            message: 'Unauthorized',
         };
     }
 
@@ -78,11 +103,11 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
     const password = formData.get('password')!;
 
     if (!username) {
-        return { error: 'null user' };
+        return { message: 'null user', success: false };
     }
 
     if (typeof password != 'string') {
-        return { error: 'invalid password type' };
+        return { message: 'invalid password type', success: false };
     }
 
     const existedUser = await db.query.user.findFirst({
@@ -90,19 +115,25 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
     });
 
     if (!existedUser) {
-        return { error: 'incorrect username' };
+        return { message: 'incorrect username', success: false };
     }
 
-    const validPassword = () => {
-        const hashedPassword = String(
-            argon2id(password, 'salt', { t: 2, m: 65536, p: 1 }),
-        );
-        return hashedPassword === existedUser.hashed_password;
-    };
+    // const validPassword = () => {
+    //     const hashedPassword = String(
+    //         argon2id(password, 'salt', { t: 2, m: 65536, p: 1 }),
+    //     );
+    //     return hashedPassword === existedUser.hashed_password;
+    // };
+
+    const validPassword = await new Argon2id().verify(
+        existedUser.hashed_password,
+        password,
+    );
 
     if (!validPassword) {
         return {
-            error: 'Incorrect password',
+            message: 'Incorrect password',
+            success: false,
         };
     }
 
