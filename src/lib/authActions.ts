@@ -5,8 +5,6 @@ import { user } from '@/db/schema';
 import { lucia, validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Argon2id } from 'oslo/password';
-// import { argon2id } from '@noble/hashes/argon2';
-// import { randomBytes } from '@noble/hashes/utils';
 import { generateId } from 'lucia';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
@@ -117,13 +115,6 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
     if (!existedUser) {
         return { message: 'incorrect username', success: false };
     }
-
-    // const validPassword = () => {
-    //     const hashedPassword = String(
-    //         argon2id(password, 'salt', { t: 2, m: 65536, p: 1 }),
-    //     );
-    //     return hashedPassword === existedUser.hashed_password;
-    // };
 
     const validPassword = await new Argon2id().verify(
         existedUser.hashed_password,
