@@ -14,13 +14,14 @@ import {
     DrawerTrigger,
 } from '@/components/ui/drawer';
 import AuthModal from './AuthModal';
+import Link from 'next/link';
 
 export default async function Navbar() {
     const { user } = await validateRequest();
 
     return (
         <div className='flex h-[100px] w-full items-center justify-between border-2 border-pink-300 px-1 md:px-6 lg:px-40'>
-            <LogoWrapper />
+            <LogoWrapper width={300} height={200} />
             <Drawer>
                 <DrawerTrigger>
                     <Button
@@ -47,11 +48,12 @@ export default async function Navbar() {
                                 <User />
                                 <span className='text-md'>{user.username}</span>
                             </div>
+                            <Button variant='outline'>
+                                <Link href='/main'>Main App</Link>
+                            </Button>
                             <DrawerClose>
                                 <AuthForm action={logout}>
-                                    <Button variant='destructive'>
-                                        Logout
-                                    </Button>
+                                    <Button variant='outline'>Logout</Button>
                                 </AuthForm>
                             </DrawerClose>
                         </div>
@@ -72,11 +74,16 @@ export default async function Navbar() {
                 {!user ? (
                     <AuthModal />
                 ) : (
-                    <div className='flex items-center gap-1'>
-                        <User />
-                        <span className='text-sm'>{user.username}</span>
+                    <div className='flex items-center gap-6'>
+                        <div className='flex items-center gap-1'>
+                            <User />
+                            <span className='text-sm'>{user.username}</span>
+                        </div>
+                        <Button variant='outline'>
+                            <Link href='/main'>Main App</Link>
+                        </Button>
                         <AuthForm action={logout}>
-                            <Button>Logout</Button>
+                            <Button variant='outline'>Logout</Button>
                         </AuthForm>
                     </div>
                 )}

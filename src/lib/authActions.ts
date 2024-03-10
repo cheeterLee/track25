@@ -75,7 +75,7 @@ export async function signup(
         sessionCookie.attributes,
     );
 
-    return redirect('/');
+    return redirect('/main');
 }
 
 export async function logout(): Promise<ActionResult> {
@@ -145,5 +145,5 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
         sessionCookie.attributes,
     );
 
-    return redirect('/');
+    return redirect('/main');
 }
