@@ -33,7 +33,7 @@ export const session = pgTable('session', {
 });
 
 export const track = pgTable('track', {
-    id: uuid('id'),
+    id: uuid('id').primaryKey().defaultRandom(),
     userId: varchar('user_id', {
         length: 255,
     })

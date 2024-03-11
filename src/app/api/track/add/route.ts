@@ -8,6 +8,7 @@ import { Track, TrackReqParam } from '@/lib/type';
 import length from '@turf/length';
 import { track } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function POST(request: Request): Promise<NextResponse> {
     const data: TrackReqParam = await request.json();
@@ -46,6 +47,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 	}
 
     await db.insert(track).values(param);
+
+	revalidatePath('/')
 
     return NextResponse.json({ code: 200 });
 }
