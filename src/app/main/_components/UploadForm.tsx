@@ -4,27 +4,32 @@ import type { PutBlobResult } from '@vercel/blob';
 import { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { getSlug } from '@/lib/helper';
+import { TrackReqParam } from '@/lib/type';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [blob, setBlob] = useState<PutBlobResult | null>(null);
+    const [fileStr, setFileStr] = useState<string>('');
 
-    // const [fstr, setFstr] = useState<string>('');
     let fileReader = useRef<FileReader | null>(null);
 
-    // const handleFileRead = () => {
-    //     if (fileReader.current) {
-    //         const content = fileReader.current.result;
-    //         setFstr(content as string);
-    //     }
-    // };
+    const handleFileRead = () => {
+        if (fileReader.current) {
+            const content = fileReader.current.result;
+            setFileStr(content as string);
+        }
+    };
 
-    // const handleOnChange = (event: any) => {
-    //     const file = event.target.files[0];
-    //     fileReader.current = new FileReader();
-    //     fileReader.current.onloadend = handleFileRead;
-    //     fileReader.current.readAsText(file);
-    // };
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files == null) {
+            return;
+        }
+        const file = event.target.files[0];
+        fileReader.current = new FileReader();
+        fileReader.current.onloadend = handleFileRead;
+        fileReader.current.readAsText(file);
+    };
 
     return (
         <>
@@ -37,7 +42,7 @@ export default function UploadForm() {
                     }
 
                     const file = inputFileRef.current.files[0];
-                    console.log(file)
+                    console.log(file);
 
                     const response = await fetch(
                         `/api/file/upload?filename=${file.name}`,
@@ -48,32 +53,35 @@ export default function UploadForm() {
                     );
 
                     const newBlob = (await response.json()) as PutBlobResult;
+                    console.log('newBlob', newBlob);
 
                     setBlob(newBlob);
 
-                    // const params: any = {
-                    // 	slug: newBlob.pathname,
-                    // 	fileString: fstr,
-                    // }
+                    const slug = getSlug(newBlob.pathname);
 
-                    // const res = await fetch(`/api/track/add?filename=${file.name}`, {
-                    // 	method: "POST",
-                    // 	body: JSON.stringify(params),
-                    // })
+                    const params: TrackReqParam = {
+                        slug: slug,
+                        fileString: fileStr,
+                        downloadUrl: newBlob.url,
+                    };
 
-                    // const data: any = res.json()
+                    const res = await fetch('/api/track/add', {
+                        method: 'POST',
+                        body: JSON.stringify(params),
+                    });
+
+                    const data: any = await res.json();
+                    console.log('data client', data);
                 }}
                 className='flex flex-col gap-3'
             >
                 <Input
-                    // onChange={(e) => handleOnChange(e)}
+                    onChange={(e) => handleOnChange(e)}
                     name='file'
                     type='file'
                     ref={inputFileRef}
                     required
                 />
-                {/* <input onChange={(e) => handleOnChange(e)} name="file" ref={inputFileRef} type="file" required /> */}
-                {/* <button type='submit'>Upload</button> */}
                 <div className='flex w-full justify-end'>
                     <Button variant='secondary' type='submit'>
                         Upload

@@ -50,12 +50,7 @@ export async function signup(
         };
     }
 
-    // const salt = randomBytes(32);
-
     const hashedPassword = await new Argon2id().hash(password);
-    // const hashedPassword = String(
-    //     argon2id(password, salt, { t: 2, m: 65536, p: 1 }),
-    // );
 
     const userId = generateId(15);
 

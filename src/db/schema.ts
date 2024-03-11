@@ -41,8 +41,8 @@ export const track = pgTable('track', {
         .references(() => user.id),
     path: text('path'),
     downloadUrl: text('download_url'),
-    distance: decimal('distance', { precision: 2 }),
-    elevation: decimal('elevation', { precision: 2 }),
+    distance: text('distance'),
+    elevation: text('elevation'),
     downloadTimes: integer('download_times'),
 });
 
