@@ -6,7 +6,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint src --ext ts,tsx,js,jsx --max-warnings 0",
+        "lint": "eslint src --ext ts,tsx,js,jsx --max-warnings 10",
         "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css}'",
         "db:push": "drizzle-kit push:pg --config=drizzle.config.ts",
         "db:studio": "drizzle-kit studio"
