@@ -45,7 +45,7 @@ export default function Sidebar() {
                     <Button variant='ghost'>My tracks</Button>
                 </div>
                 <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger asChild>
                         <Button
                             variant='outline'
                             className='flex items-center gap-1'
@@ -56,7 +56,7 @@ export default function Sidebar() {
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Upload your gpx file</DialogTitle>             
+                            <DialogTitle>Upload your gpx file</DialogTitle>
                         </DialogHeader>
                         <UploadForm />
                     </DialogContent>
