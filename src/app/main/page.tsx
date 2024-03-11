@@ -5,16 +5,16 @@ import { redirect } from 'next/navigation';
 import { db } from '@/db';
 
 export default async function MainScreen() {
-    const { user } = await validateRequest()
+    const { user } = await validateRequest();
     if (!user) {
-        redirect('/')
+        redirect('/');
     }
 
     const trackData = await db.query.track.findMany({
-        where: (track, { eq }) => eq(track.userId, user.id)
-    })
+        where: (track, { eq }) => eq(track.userId, user.id),
+    });
 
-    console.log('trackData', trackData)
+    console.log('trackData', trackData);
 
     return (
         <div className='flex min-h-screen w-screen'>

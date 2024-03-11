@@ -36,19 +36,19 @@ export async function POST(request: Request): Promise<NextResponse> {
         return NextResponse.json({ code: 400 });
     }
 
-	const param: Track = {
-		slug: slug,
+    const param: Track = {
+        slug: slug,
         userId: user.id,
         path: geoJsonString,
         distance: Number(distance).toFixed(2),
         elevation: Number(elevation).toFixed(2),
         downloadUrl: downloadUrl,
         downloadTimes: 0,
-	}
+    };
 
     await db.insert(track).values(param);
 
-	revalidatePath('/')
+    revalidatePath('/');
 
     return NextResponse.json({ code: 200 });
 }
