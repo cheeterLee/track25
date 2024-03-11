@@ -5,7 +5,16 @@ import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Settings } from 'lucide-react';
+import { Settings, Upload, Contact } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import UploadForm from './UploadForm';
 
 export default function Sidebar() {
     return (
@@ -17,7 +26,13 @@ export default function Sidebar() {
                     </Link>
                 </Button>
                 <div className='flex items-center gap-2'>
-                    <Button variant='outline'>Friends</Button>
+                    <Button
+                        variant='outline'
+                        className='flex items-center gap-1'
+                    >
+                        <Contact width={15} height={15} />
+                        Friends
+                    </Button>
                     <ThemeToggle />
                 </div>
             </div>
@@ -29,7 +44,23 @@ export default function Sidebar() {
                     <Button variant='ghost'>All tracks</Button>
                     <Button variant='ghost'>My tracks</Button>
                 </div>
-                <Button variant='outline'>Upload</Button>
+                <Dialog>
+                    <DialogTrigger>
+                        <Button
+                            variant='outline'
+                            className='flex items-center gap-1'
+                        >
+                            <Upload width={15} height={15} />
+                            Upload
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Upload your gpx file</DialogTitle>             
+                        </DialogHeader>
+                        <UploadForm />
+                    </DialogContent>
+                </Dialog>
             </div>
             <div className='max-w-full flex-1 border-2 border-blue-300'>
                 tracks

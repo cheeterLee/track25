@@ -1,4 +1,13 @@
-import { pgTable, timestamp, text, varchar, uuid } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import {
+    pgTable,
+    timestamp,
+    text,
+    varchar,
+    uuid,
+    decimal,
+    integer,
+} from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
     id: varchar('id', {
@@ -25,10 +34,25 @@ export const session = pgTable('session', {
 
 export const track = pgTable('track', {
     id: uuid('id'),
-    user_id: varchar('user_id', {
+    userId: varchar('user_id', {
         length: 255,
     })
         .notNull()
         .references(() => user.id),
     path: text('path'),
+    downloadUrl: text('download_url'),
+    distance: decimal('distance', { precision: 2 }),
+    elevation: decimal('elevation', { precision: 2 }),
+    downloadTimes: integer('download_times'),
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+    tracks: many(track),
+}));
+
+export const trackRelations = relations(track, ({ one }) => ({
+    owner: one(user, {
+        fields: [track.userId],
+        references: [user.id],
+    }),
+}));
