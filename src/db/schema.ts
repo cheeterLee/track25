@@ -1,4 +1,4 @@
-import { pgTable, timestamp, text, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, text, varchar, uuid } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
     id: varchar('id', {
@@ -21,4 +21,14 @@ export const session = pgTable('session', {
         withTimezone: true,
         mode: 'date',
     }).notNull(),
+});
+
+export const track = pgTable('track', {
+    id: uuid('id'),
+    user_id: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    path: text('path'),
 });
