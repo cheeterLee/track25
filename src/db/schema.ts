@@ -39,11 +39,12 @@ export const track = pgTable('track', {
     })
         .notNull()
         .references(() => user.id),
-    path: text('path'),
-    downloadUrl: text('download_url'),
-    distance: text('distance'),
-    elevation: text('elevation'),
-    downloadTimes: integer('download_times'),
+    path: text('path').notNull(),
+    slug: text('slug').notNull(),
+    downloadUrl: text('download_url').notNull(),
+    distance: text('distance').notNull(),
+    elevation: text('elevation').notNull(),
+    downloadTimes: integer('download_times').notNull(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({

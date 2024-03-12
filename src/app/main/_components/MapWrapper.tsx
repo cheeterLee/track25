@@ -29,7 +29,7 @@ export default function MapWrapper() {
             center: [lng, lat],
             zoom: zoom,
         });
-    }, []);
+    }, [lng, lat, zoom, theme]);
 
     useEffect(() => {
         map.current?.setStyle(
