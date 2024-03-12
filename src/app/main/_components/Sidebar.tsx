@@ -5,7 +5,8 @@ import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Upload, Contact } from 'lucide-react';
+import { Settings, Upload, Contact, ChevronRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -14,8 +15,17 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import UploadForm from './UploadForm';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Track } from '@/lib/type';
+import { User } from 'lucia';
 
-export default function Sidebar() {
+export default function Sidebar({
+    myTrackData,
+    user,
+}: {
+    myTrackData: Track[];
+    user: User;
+}) {
     return (
         <div className='flex min-h-screen w-screen flex-col sm:w-[430px]'>
             <div className='mx-2 flex h-[60px] max-w-full items-center justify-between'>
@@ -38,32 +48,67 @@ export default function Sidebar() {
             <div className='flex max-h-[170px] max-w-full flex-col items-center justify-center'>
                 <LogoWrapper width={400} height={250} />
             </div>
-            <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-2 border-pink-200 px-2 pb-1'>
-                <div className='flex h-full items-center'>
-                    <Button variant='ghost'>All tracks</Button>
-                    <Button variant='ghost'>My tracks</Button>
+
+            <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
+                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-2 border-pink-200 px-2 pb-1'>
+                    <TabsList className='gap-1'>
+                        <TabsTrigger value='my'>My tracks</TabsTrigger>
+                        <TabsTrigger value='all'>All tracks</TabsTrigger>
+                    </TabsList>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant='outline'
+                                className='flex items-center gap-1'
+                            >
+                                <Upload width={15} height={15} />
+                                Upload
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Upload your gpx file</DialogTitle>
+                            </DialogHeader>
+                            <UploadForm />
+                        </DialogContent>
+                    </Dialog>
                 </div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button
-                            variant='outline'
-                            className='flex items-center gap-1'
-                        >
-                            <Upload width={15} height={15} />
-                            Upload
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Upload your gpx file</DialogTitle>
-                        </DialogHeader>
-                        <UploadForm />
-                    </DialogContent>
-                </Dialog>
-            </div>
-            <div className='max-w-full flex-1 border-2 border-blue-300'>
-                tracks
-            </div>
+
+                <div className='max-w-full flex-1'>
+                    <TabsContent value='my' className='flex flex-col px-2'>
+                        {myTrackData.map((track) => (
+                            <div
+                                key={track.id}
+                                className='h-[100px] w-full px-2 py-1'
+                            >
+                                <Card className='flex h-full items-center justify-between px-2'>
+                                    <div className='flex flex-col gap-2'>
+                                        <div>{track.slug}</div>
+                                        <div className='flex items-center gap-2 text-sm'>
+                                            <div className='flex items-center gap-1'>
+                                                <div className='h-[5px] w-[5px] rounded-full bg-orange-300'></div>
+                                                <div>
+                                                    elevation: {track.elevation}
+                                                </div>
+                                            </div>
+                                            <div className='flex items-center gap-1'>
+                                                <div className='h-[5px] w-[5px] rounded-full bg-teal-500'></div>
+                                                <div>
+                                                    distance: {track.distance}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <Button size='icon' variant='ghost'>
+                                        <ChevronRight width={20} height={20} />
+                                    </Button>
+                                </Card>
+                            </div>
+                        ))}
+                    </TabsContent>
+                    <TabsContent value='all'>all tracks</TabsContent>
+                </div>
+            </Tabs>
             <div className='flex h-[100px] max-w-full items-center justify-between px-4'>
                 <div className='flex items-center gap-4'>
                     <Avatar>
@@ -74,7 +119,7 @@ export default function Sidebar() {
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className='flex flex-col items-center gap-1'>
-                        <p>username</p>
+                        <p>{user.username}</p>
                         <Badge variant='secondary'>Free</Badge>
                     </div>
                 </div>

@@ -11,15 +11,15 @@ export default async function MainScreen() {
         redirect('/');
     }
 
-    const trackData: Track[] = await db.query.track.findMany({
+    const myTrackData: Track[] = await db.query.track.findMany({
         where: (track, { eq }) => eq(track.userId, user.id),
     });
 
-    console.log('trackData', trackData);
+    console.log('trackData', myTrackData);
 
     return (
         <div className='flex min-h-screen w-screen'>
-            <Sidebar />
+            <Sidebar myTrackData={myTrackData} user={user} />
             <MapWrapper />
         </div>
     );
