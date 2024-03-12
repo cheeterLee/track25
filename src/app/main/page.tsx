@@ -15,7 +15,5 @@ export default async function MainScreen() {
         where: (track, { eq }) => eq(track.userId, user.id),
     });
 
-    console.log('trackData', myTrackData);
-
     return <Sidebar myTrackData={myTrackData} user={user} />;
 }

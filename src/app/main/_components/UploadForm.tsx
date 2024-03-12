@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getSlug } from '@/lib/helper';
 import { TrackReqParam } from '@/lib/type';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
@@ -44,7 +44,6 @@ export default function UploadForm() {
                     }
 
                     const file = inputFileRef.current.files[0];
-                    console.log(file);
 
                     const response = await fetch(
                         `/api/file/upload?filename=${file.name}`,
@@ -55,7 +54,6 @@ export default function UploadForm() {
                     );
 
                     const newBlob = (await response.json()) as PutBlobResult;
-                    console.log('newBlob', newBlob);
 
                     setBlob(newBlob);
 
@@ -73,7 +71,6 @@ export default function UploadForm() {
                     });
 
                     const data: { code: number } = await res.json();
-                    console.log('data client', data);
                     if (data.code === 200) {
                         startTransition(() => {
                             router.refresh();
