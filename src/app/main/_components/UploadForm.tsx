@@ -1,16 +1,18 @@
 'use client';
 
 import type { PutBlobResult } from '@vercel/blob';
-import { useState, useRef } from 'react';
+import { useState, useRef, startTransition } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getSlug } from '@/lib/helper';
 import { TrackReqParam } from '@/lib/type';
+import { useRouter } from 'next/navigation';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [blob, setBlob] = useState<PutBlobResult | null>(null);
     const [fileStr, setFileStr] = useState<string>('');
+    const router = useRouter()
 
     let fileReader = useRef<FileReader | null>(null);
 
@@ -70,8 +72,13 @@ export default function UploadForm() {
                         body: JSON.stringify(params),
                     });
 
-                    const data: any = await res.json();
+                    const data: { code: number } = await res.json();
                     console.log('data client', data);
+                    if (data.code === 200) {
+                        startTransition(() => {
+                            router.refresh()
+                        })
+                    }
                 }}
                 className='flex flex-col gap-3'
             >
