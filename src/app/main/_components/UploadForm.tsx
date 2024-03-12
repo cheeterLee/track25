@@ -12,7 +12,7 @@ export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [blob, setBlob] = useState<PutBlobResult | null>(null);
     const [fileStr, setFileStr] = useState<string>('');
-    const router = useRouter()
+    const router = useRouter();
 
     let fileReader = useRef<FileReader | null>(null);
 
@@ -76,8 +76,8 @@ export default function UploadForm() {
                     console.log('data client', data);
                     if (data.code === 200) {
                         startTransition(() => {
-                            router.refresh()
-                        })
+                            router.refresh();
+                        });
                     }
                 }}
                 className='flex flex-col gap-3'

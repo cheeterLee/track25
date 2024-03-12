@@ -18,6 +18,7 @@ import UploadForm from './UploadForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Track } from '@/lib/type';
 import { User } from 'lucia';
+import ToDetailButton from './ToDetailButton';
 
 export default function Sidebar({
     myTrackData,
@@ -99,9 +100,7 @@ export default function Sidebar({
                                             </div>
                                         </div>
                                     </div>
-                                    <Button size='icon' variant='ghost'>
-                                        <ChevronRight width={20} height={20} />
-                                    </Button>
+                                    <ToDetailButton slug={track.slug} />
                                 </Card>
                             </div>
                         ))}

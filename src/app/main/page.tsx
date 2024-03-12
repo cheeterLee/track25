@@ -17,10 +17,5 @@ export default async function MainScreen() {
 
     console.log('trackData', myTrackData);
 
-    return (
-        <div className='flex min-h-screen w-screen'>
-            <Sidebar myTrackData={myTrackData} user={user} />
-            <MapWrapper />
-        </div>
-    );
+    return <Sidebar myTrackData={myTrackData} user={user} />;
 }
