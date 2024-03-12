@@ -1,6 +1,3 @@
-import { UUID } from 'crypto';
-import { PgUUID } from 'drizzle-orm/pg-core';
-
 export interface TrackReqParam {
     slug: string;
     fileString: string;
@@ -8,7 +5,7 @@ export interface TrackReqParam {
 }
 
 export interface Track {
-    id?: UUID;
+    id?: string;
     userId: string;
     slug: string;
     path: string;

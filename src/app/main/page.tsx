@@ -3,6 +3,7 @@ import MapWrapper from './_components/MapWrapper';
 import Sidebar from './_components/Sidebar';
 import { redirect } from 'next/navigation';
 import { db } from '@/db';
+import { Track } from '@/lib/type';
 
 export default async function MainScreen() {
     const { user } = await validateRequest();
@@ -10,7 +11,7 @@ export default async function MainScreen() {
         redirect('/');
     }
 
-    const trackData = await db.query.track.findMany({
+    const trackData: Track[] = await db.query.track.findMany({
         where: (track, { eq }) => eq(track.userId, user.id),
     });
 
