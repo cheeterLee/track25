@@ -51,7 +51,7 @@ export default function Sidebar({
             </div>
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
-                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-2 border-pink-200 px-2 pb-1'>
+                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 dark:border-slate-300'>
                     <TabsList className='gap-1'>
                         <TabsTrigger value='my'>My tracks</TabsTrigger>
                         <TabsTrigger value='all'>All tracks</TabsTrigger>
@@ -77,33 +77,41 @@ export default function Sidebar({
 
                 <div className='max-w-full flex-1'>
                     <TabsContent value='my' className='flex flex-col px-2'>
-                        {myTrackData.map((track) => (
-                            <div
-                                key={track.id}
-                                className='h-[100px] w-full px-2 py-1'
-                            >
-                                <Card className='flex h-full items-center justify-between px-2'>
-                                    <div className='flex flex-col gap-2'>
-                                        <div>{track.slug}</div>
-                                        <div className='flex items-center gap-2 text-sm'>
-                                            <div className='flex items-center gap-1'>
-                                                <div className='h-[5px] w-[5px] rounded-full bg-orange-300'></div>
-                                                <div>
-                                                    elevation: {track.elevation}
+                        {myTrackData.length === 0 ? (
+                            <div className='flex h-full w-full items-center justify-center'>
+                                You don&apos;t have any track yet :(
+                            </div>
+                        ) : (
+                            myTrackData.map((track) => (
+                                <div
+                                    key={track.id}
+                                    className='h-[100px] w-full px-2 py-1'
+                                >
+                                    <Card className='flex h-full items-center justify-between px-2'>
+                                        <div className='flex flex-col gap-2'>
+                                            <div>{track.slug}</div>
+                                            <div className='flex items-center gap-2 text-sm'>
+                                                <div className='flex items-center gap-1'>
+                                                    <div className='h-[5px] w-[5px] rounded-full bg-orange-300'></div>
+                                                    <div>
+                                                        elevation:{' '}
+                                                        {track.elevation}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className='flex items-center gap-1'>
-                                                <div className='h-[5px] w-[5px] rounded-full bg-teal-500'></div>
-                                                <div>
-                                                    distance: {track.distance}
+                                                <div className='flex items-center gap-1'>
+                                                    <div className='h-[5px] w-[5px] rounded-full bg-teal-500'></div>
+                                                    <div>
+                                                        distance:{' '}
+                                                        {track.distance}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <ToDetailButton slug={track.slug} />
-                                </Card>
-                            </div>
-                        ))}
+                                        <ToDetailButton slug={track.slug} />
+                                    </Card>
+                                </div>
+                            ))
+                        )}
                     </TabsContent>
                     <TabsContent value='all'>all tracks</TabsContent>
                 </div>
