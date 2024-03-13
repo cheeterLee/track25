@@ -16,8 +16,6 @@ export default function MapWrapper({ myTrackData }: { myTrackData: Track[] }) {
     const [zoom, setZoom] = useState(6);
     const router = useRouter();
 
-    console.log('data', myTrackData);
-
     const { theme } = useTheme();
 
     const addTrackLayers = useCallback(() => {
@@ -71,7 +69,7 @@ export default function MapWrapper({ myTrackData }: { myTrackData: Track[] }) {
                 router.push(`/main/${track.slug}`);
             });
         });
-    }, [myTrackData]);
+    }, [myTrackData, router]);
 
     useEffect(() => {
         if (map.current) {

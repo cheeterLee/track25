@@ -51,7 +51,7 @@ export default function Sidebar({
             </div>
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
-                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-2 border-pink-200 px-2 pb-1'>
+                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 dark:border-slate-300'>
                     <TabsList className='gap-1'>
                         <TabsTrigger value='my'>My tracks</TabsTrigger>
                         <TabsTrigger value='all'>All tracks</TabsTrigger>
@@ -79,7 +79,7 @@ export default function Sidebar({
                     <TabsContent value='my' className='flex flex-col px-2'>
                         {myTrackData.length === 0 ? (
                             <div className='flex h-full w-full items-center justify-center'>
-                                You don't have any track yet :(
+                                You don&apos;t have any track yet :(
                             </div>
                         ) : (
                             myTrackData.map((track) => (
