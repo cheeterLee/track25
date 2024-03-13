@@ -197,7 +197,7 @@ export default function Sidebar({
                                             variant='outline'
                                             className='mt-10'
                                         >
-                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
+                                            <Link href='https://buy.stripe.com/test_5kAcMS8fC48s1BCbIJ'>
                                                 Subscribe
                                             </Link>
                                         </Button>
@@ -215,7 +215,7 @@ export default function Sidebar({
                                             variant='outline'
                                             className='mt-10'
                                         >
-                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
+                                            <Link href='https://buy.stripe.com/test_7sI7sydzWdJ21BCbIK'>
                                                 Subscribe
                                             </Link>
                                         </Button>
