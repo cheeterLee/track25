@@ -51,7 +51,7 @@ export default function Sidebar({
             </div>
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
-                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 dark:border-slate-300'>
+                <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 shadow-sm dark:border-slate-300'>
                     <TabsList className='gap-1'>
                         <TabsTrigger value='my'>My tracks</TabsTrigger>
                         <TabsTrigger value='all'>All tracks</TabsTrigger>
@@ -179,7 +179,9 @@ export default function Sidebar({
                                             variant='outline'
                                             className='mt-10'
                                         >
-                                            Subscribe
+                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
+                                                Subscribe
+                                            </Link>
                                         </Button>
                                     </Card>
                                     <Card className='flex h-[250px] flex-col items-center justify-center'>
@@ -195,7 +197,9 @@ export default function Sidebar({
                                             variant='outline'
                                             className='mt-10'
                                         >
-                                            Subscribe
+                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
+                                                Subscribe
+                                            </Link>
                                         </Button>
                                     </Card>
                                     <Card className='flex h-[250px] flex-col items-center justify-center'>
@@ -211,7 +215,9 @@ export default function Sidebar({
                                             variant='outline'
                                             className='mt-10'
                                         >
-                                            Subscribe
+                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
+                                                Subscribe
+                                            </Link>
                                         </Button>
                                     </Card>
                                 </div>

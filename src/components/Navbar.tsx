@@ -20,7 +20,7 @@ export default async function Navbar() {
     const { user } = await validateRequest();
 
     return (
-        <div className='flex h-[100px] w-full items-center justify-between border-2 border-pink-300 px-1 md:px-6 lg:px-40'>
+        <div className='flex h-[100px] w-full items-center justify-between border-b-[1px] border-slate-400 px-1 shadow-sm dark:border-slate-300 md:px-6 lg:px-40'>
             <LogoWrapper width={300} height={200} />
             <Drawer>
                 <DrawerTrigger>
