@@ -130,9 +130,95 @@ export default function Sidebar({
                         <Badge variant='secondary'>Free</Badge>
                     </div>
                 </div>
-                <Button variant='outline' size='icon'>
-                    <Settings width={20} height={20} />
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant='outline' size='icon'>
+                            <Settings width={20} height={20} />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className='flex h-[420px] min-w-[80vw] max-w-[80vw] flex-col justify-start overflow-y-scroll sm:min-w-[800px] sm:max-w-[50vw]'>
+                        <DialogHeader>
+                            <DialogTitle></DialogTitle>
+                        </DialogHeader>
+                        <Tabs defaultValue='account' className='h-full w-full'>
+                            <TabsList>
+                                <TabsTrigger value='profile'>
+                                    Profile
+                                </TabsTrigger>
+                                <TabsTrigger value='subscription'>
+                                    Subscription
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent
+                                value='profile'
+                                className='flex w-full flex-col justify-between gap-6'
+                            >
+                                <div className='min-h-[250px] border-2 border-pink-200'></div>
+                                <div className='flex justify-end'>
+                                    <Button variant='destructive'>
+                                        Logout
+                                    </Button>
+                                </div>
+                            </TabsContent>
+                            <TabsContent
+                                value='subscription'
+                                className='flex w-full flex-col gap-6'
+                            >
+                                <div>You are currently on a free plan</div>
+                                <div className='grid max-h-full w-full grid-cols-1 gap-1 overflow-y-scroll sm:grid-cols-3'>
+                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
+                                        <div className='flex flex-col items-center justify-center gap-1'>
+                                            <div className='text-2xl'>
+                                                Monthly
+                                            </div>
+                                            <div className='text-sm'>
+                                                5&pound; per month
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant='outline'
+                                            className='mt-10'
+                                        >
+                                            Subscribe
+                                        </Button>
+                                    </Card>
+                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
+                                        <div className='flex flex-col items-center justify-center gap-1'>
+                                            <div className='text-2xl'>
+                                                Quarterly
+                                            </div>
+                                            <div className='text-sm'>
+                                                10&pound; per quarter
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant='outline'
+                                            className='mt-10'
+                                        >
+                                            Subscribe
+                                        </Button>
+                                    </Card>
+                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
+                                        <div className='flex flex-col items-center justify-center gap-1'>
+                                            <div className='text-2xl'>
+                                                Yearly
+                                            </div>
+                                            <div className='text-sm'>
+                                                30&pound; per year
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant='outline'
+                                            className='mt-10'
+                                        >
+                                            Subscribe
+                                        </Button>
+                                    </Card>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );
