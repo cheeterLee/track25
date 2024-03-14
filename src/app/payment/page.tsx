@@ -24,7 +24,7 @@ export default function PaymentScreen() {
     }, [sessionId]);
 
     return (
-        <div className='h-screen w-screen border-2 border-pink-200'>
+        <div className='flex h-screen w-screen items-center justify-center'>
             <Button>
                 <Link href='/main'>Back to App</Link>
             </Button>
