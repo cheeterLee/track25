@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { retrieveCheckoutSession } from '@/lib/paymentActions';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function Hero() {
     const searchParams = useSearchParams();
@@ -24,12 +24,10 @@ export default function Hero() {
     }, [sessionId]);
 
     return (
-        <Suspense>
-            <div className='flex h-screen w-screen items-center justify-center'>
-                <Button>
-                    <Link href='/main'>Back to App</Link>
-                </Button>
-            </div>
-        </Suspense>
+        <div className='flex h-screen w-screen items-center justify-center'>
+            <Button>
+                <Link href='/main'>Back to App</Link>
+            </Button>
+        </div>
     );
 }
