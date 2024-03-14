@@ -41,6 +41,9 @@ dependencies:
   '@radix-ui/react-toast':
     specifier: ^1.1.5
     version: 1.1.5(@types/react-dom@18.2.19)(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
+  '@stripe/stripe-js':
+    specifier: ^3.0.8
+    version: 3.0.8
   '@turf/length':
     specifier: ^6.5.0
     version: 6.5.0
@@ -2453,6 +2456,11 @@ packages:
   /@rushstack/eslint-patch@1.7.2:
     resolution: {integrity: sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==}
     dev: true
+
+  /@stripe/stripe-js@3.0.8:
+    resolution: {integrity: sha512-nEDZjCSrGI5GICqr2DsV7gPnEjmt5Y61Uj/z/UuWu3WR/ZyyskbEW/3ziVZdnnvFcoNCfpV2wA2ar1C1W//+Vg==}
+    engines: {node: '>=12.16'}
+    dev: false
 
   /@swc/helpers@0.5.2:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}

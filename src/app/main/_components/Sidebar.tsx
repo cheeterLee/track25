@@ -3,9 +3,7 @@ import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Settings, Upload, Contact, ChevronRight } from 'lucide-react';
+import { Upload, Contact } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import {
     Dialog,
@@ -19,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Track } from '@/lib/type';
 import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';
+import BottomBar from './Bottombar';
 
 export default function Sidebar({
     myTrackData,
@@ -116,7 +115,8 @@ export default function Sidebar({
                     <TabsContent value='all'>all tracks</TabsContent>
                 </div>
             </Tabs>
-            <div className='flex h-[100px] max-w-full items-center justify-between px-4'>
+            <BottomBar user={user} />
+            {/* <div className='flex h-[100px] max-w-full items-center justify-between px-4'>
                 <div className='flex items-center gap-4'>
                     <Avatar>
                         <AvatarImage
@@ -225,7 +225,7 @@ export default function Sidebar({
                         </Tabs>
                     </DialogContent>
                 </Dialog>
-            </div>
+            </div> */}
         </div>
     );
 }
