@@ -6,6 +6,7 @@ import { db } from '@/db';
 import { getPremiumType } from './helper';
 import { subscription, user } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { format } from 'date-fns';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
     apiVersion: '2023-10-16',
@@ -50,7 +51,10 @@ export async function retrieveCheckoutSession(sessionId: string) {
         return { success: false, error: 'no session' };
     }
 
-    const { id: subId } = sub;
+    const { id: subId, current_period_start, current_period_end } = sub;
+    // stripe unix timestamps needs be to multiply by 1000
+    const periodStartTime = format(current_period_start * 1000, 'dd/MM/yyyy');
+    const periodEndTime = format(current_period_end * 1000, 'dd/MM/yyyy');
 
     // @ts-ignore type inferring bug in Stripe
     const plan: Stripe.Plan = sub.plan;
@@ -72,9 +76,62 @@ export async function retrieveCheckoutSession(sessionId: string) {
         })
         .where(eq(user.id, authUser.id));
 
-    return { success: true, error: null, sub: sub };
+    return {
+        success: true,
+        error: null,
+        periodStartTime: periodStartTime,
+        periodEndTime: periodEndTime,
+        type: type,
+    };
 }
 
-// cancel subscription
+// cancel subscriptions
+export async function cancelSubscription(userId: string) {
+    const _user = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, userId),
+    });
+    if (_user === undefined) {
+        return { success: false, error: 'no user' };
+    }
+    const subId = _user.subscriptionId;
+    if (!subId) {
+        return { success: false, error: 'no sub founded' };
+    }
+    const sub = await stripe.subscriptions.cancel(subId);
+    if (sub) {
+        await db
+            .update(user)
+            .set({
+                isPremium: false,
+                tariff: 'free',
+            })
+            .where(eq(user.id, userId));
+        return { success: true, error: null };
+    } else {
+        return { success: false, error: 'cannot cancel' };
+    }
+}
 
-// retrieve to check and update subscription
+// check if subscription is valid
+export async function validateSubscription(userId: string) {
+    const _user = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, userId),
+    });
+    if (_user === undefined) {
+        return { isPremium: false, tariff: 'free', error: 'user is undefined' };
+    }
+    const subId = _user.subscriptionId;
+    if (!subId) {
+        return { isPremium: false, tariff: 'free', error: 'no sub founded' };
+    }
+    const sub = await stripe.subscriptions.retrieve(subId);
+    if (sub.status !== 'active') {
+        await db.update(user).set({
+            isPremium: false,
+            tariff: 'free',
+        });
+        return { isPremium: false, tariff: 'free', error: null };
+    } else {
+        return { isPremium: true, tariff: _user.tariff, error: null };
+    }
+}

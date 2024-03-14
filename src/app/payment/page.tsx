@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 
 export default function PaymentScreen() {
     return (
-        <Suspense>
+        <Suspense fallback={<div>loading...</div>}>
             <Hero />;
         </Suspense>
     );
