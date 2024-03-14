@@ -14,3 +14,9 @@ export interface Track {
     downloadUrl: string;
     downloadTimes: number;
 }
+
+export interface Plan {
+    id: string;
+    name: string;
+    priceStr: string;
+}
