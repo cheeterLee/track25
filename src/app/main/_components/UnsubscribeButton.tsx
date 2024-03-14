@@ -24,7 +24,11 @@ export default function UnsubscribeButton({
     };
 
     return (
-        <Button variant='destructive' onClick={handleOnclick}>
+        <Button
+            variant='destructive'
+            disabled={!isPremium}
+            onClick={handleOnclick}
+        >
             Unsubscribe
         </Button>
     );

@@ -6,6 +6,7 @@ import { db } from '@/db';
 import { getPremiumType } from './helper';
 import { subscription, user } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { format } from 'date-fns';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
     apiVersion: '2023-10-16',
@@ -50,7 +51,10 @@ export async function retrieveCheckoutSession(sessionId: string) {
         return { success: false, error: 'no session' };
     }
 
-    const { id: subId } = sub;
+    const { id: subId, current_period_start, current_period_end } = sub;
+    // stripe unix timestamps needs be to multiply by 1000
+    const periodStartTime = format(current_period_start * 1000, 'dd/MM/yyyy');
+    const periodEndTime = format(current_period_end * 1000, 'dd/MM/yyyy');
 
     // @ts-ignore type inferring bug in Stripe
     const plan: Stripe.Plan = sub.plan;
@@ -72,7 +76,13 @@ export async function retrieveCheckoutSession(sessionId: string) {
         })
         .where(eq(user.id, authUser.id));
 
-    return { success: true, error: null, sub: sub };
+    return {
+        success: true,
+        error: null,
+        periodStartTime: periodStartTime,
+        periodEndTime: periodEndTime,
+        type: type,
+    };
 }
 
 // cancel subscriptions
