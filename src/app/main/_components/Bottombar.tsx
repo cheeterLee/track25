@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { db } from '@/db';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     Dialog,
@@ -15,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User } from 'lucia';
 import SubscribeButton from './SubscribeButton';
 import { Plan } from '@/lib/type';
+import { validateSubscription } from '@/lib/paymentActions';
+import UnsubscribeButton from './UnsubscribeButton';
 
 const plans: Plan[] = [
     {
@@ -35,9 +36,7 @@ const plans: Plan[] = [
 ];
 
 export default async function BottomBar({ user: authUser }: { user: User }) {
-    const user = await db.query.user.findFirst({
-        where: (user, { eq }) => eq(user.id, authUser.id),
-    });
+    const { isPremium, tariff } = await validateSubscription(authUser.id);
 
     return (
         <div className='flex h-[100px] max-w-full items-center justify-between px-4'>
@@ -51,7 +50,7 @@ export default async function BottomBar({ user: authUser }: { user: User }) {
                 </Avatar>
                 <div className='flex flex-col items-center gap-1'>
                     <p>{authUser.username}</p>
-                    {user?.isPremium ? (
+                    {isPremium ? (
                         <Badge variant='secondary' className='bg-green-400'>
                             Premium
                         </Badge>
@@ -90,7 +89,19 @@ export default async function BottomBar({ user: authUser }: { user: User }) {
                             value='subscription'
                             className='flex w-full flex-col gap-6'
                         >
-                            <div>You are currently on a free plan</div>
+                            <div className='flex items-center justify-between'>
+                                <div>
+                                    You are currently on a{' '}
+                                    <span className='text-orange-300'>
+                                        {tariff}
+                                    </span>{' '}
+                                    plan
+                                </div>
+                                <UnsubscribeButton
+                                    isPremium={isPremium}
+                                    userId={authUser.id}
+                                />
+                            </div>
                             <div className='grid max-h-full w-full grid-cols-1 gap-1 overflow-y-scroll sm:grid-cols-3'>
                                 {plans.map((plan) => (
                                     <Card

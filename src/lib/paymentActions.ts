@@ -75,6 +75,53 @@ export async function retrieveCheckoutSession(sessionId: string) {
     return { success: true, error: null, sub: sub };
 }
 
-// cancel subscription
+// cancel subscriptions
+export async function cancelSubscription(userId: string) {
+    const _user = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, userId),
+    });
+    if (_user === undefined) {
+        return { success: false, error: 'no user' };
+    }
+    const subId = _user.subscriptionId;
+    if (!subId) {
+        return { success: false, error: 'no sub founded' };
+    }
+    const sub = await stripe.subscriptions.cancel(subId);
+    if (sub) {
+        await db
+            .update(user)
+            .set({
+                isPremium: false,
+                tariff: 'free',
+            })
+            .where(eq(user.id, userId));
+        return { success: true, error: null };
+    } else {
+        return { success: false, error: 'cannot cancel' };
+    }
+}
 
-// retrieve to check and update subscription
+// check if subscription is valid
+export async function validateSubscription(userId: string) {
+    const _user = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, userId),
+    });
+    if (_user === undefined) {
+        return { isPremium: false, tariff: 'free', error: 'user is undefined' };
+    }
+    const subId = _user.subscriptionId;
+    if (!subId) {
+        return { isPremium: false, tariff: 'free', error: 'no sub founded' };
+    }
+    const sub = await stripe.subscriptions.retrieve(subId);
+    if (sub.status !== 'active') {
+        await db.update(user).set({
+            isPremium: false,
+            tariff: 'free',
+        });
+        return { isPremium: false, tariff: 'free', error: null };
+    } else {
+        return { isPremium: true, tariff: _user.tariff, error: null };
+    }
+}
