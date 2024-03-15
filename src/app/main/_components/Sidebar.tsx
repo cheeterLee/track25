@@ -1,9 +1,9 @@
-import { Bell, Home, Plus } from 'lucide-react';
+import { Bell, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
-import { Upload, Contact } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import {
     Dialog,
@@ -18,14 +18,7 @@ import { Track } from '@/lib/type';
 import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';
 import BottomBar from './Bottombar';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import FriendsDialog from './FriendsDialog';
 
 export default function Sidebar({
     myTrackData,
@@ -43,86 +36,7 @@ export default function Sidebar({
                     </Link>
                 </Button>
                 <div className='flex items-center gap-2'>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant='outline'
-                                className='flex items-center gap-1'
-                            >
-                                <Contact width={15} height={15} />
-                                Friends
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader></DialogHeader>
-                            <Tabs defaultValue='friends' className='w-full'>
-                                <div className='flex items-center justify-between'>
-                                    <TabsList>
-                                        <TabsTrigger value='friends'>
-                                            Friends
-                                        </TabsTrigger>
-                                        <TabsTrigger value='groups'>
-                                            Groups
-                                        </TabsTrigger>
-                                    </TabsList>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                size='icon'
-                                                variant='outline'
-                                            >
-                                                <Plus width={15} height={15} />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuLabel>
-                                                Add new friend or group
-                                            </DropdownMenuLabel>
-                                            <DropdownMenuSeparator />
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        variant='ghost'
-                                                        className='w-full'
-                                                    >
-                                                        <div className='w-full text-left'>
-                                                            Add new friend
-                                                        </div>
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        Add new friend
-                                                    </DialogHeader>
-                                                </DialogContent>
-                                            </Dialog>
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        variant='ghost'
-                                                        className='w-full'
-                                                    >
-                                                        <div className='w-full text-left'>
-                                                            Create new group
-                                                        </div>
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        Create new group
-                                                    </DialogHeader>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                                <TabsContent value='friends'>
-                                    Friends
-                                </TabsContent>
-                                <TabsContent value='groups'>Groups</TabsContent>
-                            </Tabs>
-                        </DialogContent>
-                    </Dialog>
+                    <FriendsDialog />
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button
