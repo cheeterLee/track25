@@ -1,4 +1,4 @@
-import { Home } from 'lucide-react';
+import { Bell, Home, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
@@ -18,6 +18,14 @@ import { Track } from '@/lib/type';
 import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';
 import BottomBar from './Bottombar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function Sidebar({
     myTrackData,
@@ -35,13 +43,77 @@ export default function Sidebar({
                     </Link>
                 </Button>
                 <div className='flex items-center gap-2'>
-                    <Button
-                        variant='outline'
-                        className='flex items-center gap-1'
-                    >
-                        <Contact width={15} height={15} />
-                        Friends
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant='outline'
+                                className='flex items-center gap-1'
+                            >
+                                <Contact width={15} height={15} />
+                                Friends
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader></DialogHeader>
+                            <Tabs defaultValue='friends' className='w-full'>
+                                <div className='flex items-center justify-between'>
+                                    <TabsList>
+                                        <TabsTrigger value='friends'>
+                                            Friends
+                                        </TabsTrigger>
+                                        <TabsTrigger value='groups'>
+                                            Groups
+                                        </TabsTrigger>
+                                    </TabsList>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                size='icon'
+                                                variant='outline'
+                                            >
+                                                <Plus width={15} height={15} />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuLabel>
+                                                Add new friend or group
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem>
+                                                Add new friend
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                Create new group
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                                <TabsContent value='friends'>
+                                    Friends
+                                </TabsContent>
+                                <TabsContent value='groups'>Groups</TabsContent>
+                            </Tabs>
+                        </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                className='relative'
+                                size='icon'
+                                variant='outline'
+                            >
+                                <div className='absolute right-[-2px] top-[-2px] flex h-4 w-4 items-center justify-center rounded-full bg-red-400'>
+                                    <div className='text-[9px] text-slate-300'>
+                                        1
+                                    </div>
+                                </div>
+                                <Bell width={15} height={15} />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>Notifications</DialogHeader>
+                        </DialogContent>
+                    </Dialog>
                     <ThemeToggle />
                 </div>
             </div>
@@ -116,116 +188,6 @@ export default function Sidebar({
                 </div>
             </Tabs>
             <BottomBar user={user} />
-            {/* <div className='flex h-[100px] max-w-full items-center justify-between px-4'>
-                <div className='flex items-center gap-4'>
-                    <Avatar>
-                        <AvatarImage
-                            src='https://github.com/shadcn.png'
-                            alt='@shadcn'
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className='flex flex-col items-center gap-1'>
-                        <p>{user.username}</p>
-                        <Badge variant='secondary'>Free</Badge>
-                    </div>
-                </div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant='outline' size='icon'>
-                            <Settings width={20} height={20} />
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className='flex h-[420px] min-w-[80vw] max-w-[80vw] flex-col justify-start overflow-y-scroll sm:min-w-[800px] sm:max-w-[50vw]'>
-                        <DialogHeader>
-                            <DialogTitle></DialogTitle>
-                        </DialogHeader>
-                        <Tabs defaultValue='account' className='h-full w-full'>
-                            <TabsList>
-                                <TabsTrigger value='profile'>
-                                    Profile
-                                </TabsTrigger>
-                                <TabsTrigger value='subscription'>
-                                    Subscription
-                                </TabsTrigger>
-                            </TabsList>
-                            <TabsContent
-                                value='profile'
-                                className='flex w-full flex-col justify-between gap-6'
-                            >
-                                <div className='min-h-[250px] border-2 border-pink-200'></div>
-                                <div className='flex justify-end'>
-                                    <Button variant='destructive'>
-                                        Logout
-                                    </Button>
-                                </div>
-                            </TabsContent>
-                            <TabsContent
-                                value='subscription'
-                                className='flex w-full flex-col gap-6'
-                            >
-                                <div>You are currently on a free plan</div>
-                                <div className='grid max-h-full w-full grid-cols-1 gap-1 overflow-y-scroll sm:grid-cols-3'>
-                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
-                                        <div className='flex flex-col items-center justify-center gap-1'>
-                                            <div className='text-2xl'>
-                                                Monthly
-                                            </div>
-                                            <div className='text-sm'>
-                                                5&pound; per month
-                                            </div>
-                                        </div>
-                                        <Button
-                                            variant='outline'
-                                            className='mt-10'
-                                        >
-                                            <Link href='https://buy.stripe.com/test_eVaeV0dzW7kEbccbII'>
-                                                Subscribe
-                                            </Link>
-                                        </Button>
-                                    </Card>
-                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
-                                        <div className='flex flex-col items-center justify-center gap-1'>
-                                            <div className='text-2xl'>
-                                                Quarterly
-                                            </div>
-                                            <div className='text-sm'>
-                                                10&pound; per quarter
-                                            </div>
-                                        </div>
-                                        <Button
-                                            variant='outline'
-                                            className='mt-10'
-                                        >
-                                            <Link href='https://buy.stripe.com/test_5kAcMS8fC48s1BCbIJ'>
-                                                Subscribe
-                                            </Link>
-                                        </Button>
-                                    </Card>
-                                    <Card className='flex h-[250px] flex-col items-center justify-center'>
-                                        <div className='flex flex-col items-center justify-center gap-1'>
-                                            <div className='text-2xl'>
-                                                Yearly
-                                            </div>
-                                            <div className='text-sm'>
-                                                30&pound; per year
-                                            </div>
-                                        </div>
-                                        <Button
-                                            variant='outline'
-                                            className='mt-10'
-                                        >
-                                            <Link href='https://buy.stripe.com/test_7sI7sydzWdJ21BCbIK'>
-                                                Subscribe
-                                            </Link>
-                                        </Button>
-                                    </Card>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </DialogContent>
-                </Dialog>
-            </div> */}
         </div>
     );
 }

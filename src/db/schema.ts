@@ -91,6 +91,35 @@ export const download = pgTable('download', {
     totalCount: integer('total_count').default(0),
 });
 
+export const friendRequest = pgTable('friendRequest', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    senderId: varchar('sender_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    receiverId: varchar('receiver_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    accepted: boolean('accepted').default(false),
+});
+
+export const friend = pgTable('friend', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    user1: varchar('user1_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    user2: varchar('user2_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+});
+
 export const userRelations = relations(user, ({ many }) => ({
     tracks: many(track),
 }));
