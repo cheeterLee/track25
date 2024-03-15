@@ -8,6 +8,7 @@ import { User } from '@/lib/type';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import InvitationButton from './InvitationButton';
 
 export default function SearchForm({ feedUsers }: { feedUsers: User[] }) {
     const [matchedUsers, setMatchedUsers] = useState<User[] | null>(null);
@@ -32,7 +33,7 @@ export default function SearchForm({ feedUsers }: { feedUsers: User[] }) {
                         <div className='text-md font-semibold'>
                             Users you may know
                         </div>
-                        <div className='flex flex-col gap-1'>
+                        <div className='flex flex-col gap-2'>
                             {feedUsers.map((u) => (
                                 <Card
                                     key={u.id}
@@ -45,7 +46,10 @@ export default function SearchForm({ feedUsers }: { feedUsers: User[] }) {
                                         </Avatar>
                                         <div>{u.username}</div>
                                     </div>
-                                    <Button variant='secondary'>Add</Button>
+                                    <InvitationButton
+                                        type='friend'
+                                        receiverId={u.id}
+                                    />
                                 </Card>
                             ))}
                         </div>

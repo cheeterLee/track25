@@ -19,6 +19,7 @@ import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';
 import BottomBar from './Bottombar';
 import FriendsDialog from './FriendsDialog';
+import NotificationsDialog from './NotificationsDialog';
 
 export default function Sidebar({
     myTrackData,
@@ -37,25 +38,7 @@ export default function Sidebar({
                 </Button>
                 <div className='flex items-center gap-2'>
                     <FriendsDialog />
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                className='relative'
-                                size='icon'
-                                variant='outline'
-                            >
-                                <div className='absolute right-[-2px] top-[-2px] flex h-4 w-4 items-center justify-center rounded-full bg-red-400'>
-                                    <div className='text-[9px] text-slate-300'>
-                                        1
-                                    </div>
-                                </div>
-                                <Bell width={15} height={15} />
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>Notifications</DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+                    <NotificationsDialog />
                     <ThemeToggle />
                 </div>
             </div>
