@@ -17,6 +17,8 @@ export const tariffEnum = pgEnum('tariff', [
     'yearly',
 ]);
 
+export const invitationEnum = pgEnum('invitation_type', ['friend', 'group']);
+
 export const user = pgTable('user', {
     id: varchar('id', {
         length: 255,
@@ -27,7 +29,29 @@ export const user = pgTable('user', {
     hashed_password: text('hashed_password').notNull(),
     isPremium: boolean('is_premium').default(false),
     tariff: tariffEnum('tariff').default('free'),
-    subscriptionId: text('subscriptionId'),
+    subscriptionId: text('subscription_id'),
+});
+
+export const friendList = pgTable('friend_list', {
+    id: uuid('id').defaultRandom().unique().notNull(),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+});
+
+export const friendship = pgTable('friendship', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    friendListId: uuid('friend_list_id')
+        .notNull()
+        .references(() => friendList.id),
+    friendId: varchar('friend_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const session = pgTable('session', {
@@ -68,30 +92,10 @@ export const subscription = pgTable('subscription', {
         .notNull()
         .references(() => user.id),
     type: tariffEnum('type'),
-    timestamp: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const upload = pgTable('upload', {
-    id: text('id').primaryKey().notNull(),
-    userId: varchar('user_id', {
-        length: 255,
-    })
-        .notNull()
-        .references(() => user.id),
-    totalCount: integer('total_count').default(0),
-});
-
-export const download = pgTable('download', {
-    id: text('id').primaryKey().notNull(),
-    userId: varchar('user_id', {
-        length: 255,
-    })
-        .notNull()
-        .references(() => user.id),
-    totalCount: integer('total_count').default(0),
-});
-
-export const friendRequest = pgTable('friendRequest', {
+export const invitation = pgTable('invitation', {
     id: uuid('id').primaryKey().defaultRandom(),
     senderId: varchar('sender_id', {
         length: 255,
@@ -103,23 +107,12 @@ export const friendRequest = pgTable('friendRequest', {
     })
         .notNull()
         .references(() => user.id),
+    type: invitationEnum('type'),
     accepted: boolean('accepted').default(false),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const friend = pgTable('friend', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    user1: varchar('user1_id', {
-        length: 255,
-    })
-        .notNull()
-        .references(() => user.id),
-    user2: varchar('user2_id', {
-        length: 255,
-    })
-        .notNull()
-        .references(() => user.id),
-});
-
+//  ===== Relations =====
 export const userRelations = relations(user, ({ many }) => ({
     tracks: many(track),
 }));
@@ -127,6 +120,25 @@ export const userRelations = relations(user, ({ many }) => ({
 export const trackRelations = relations(track, ({ one }) => ({
     owner: one(user, {
         fields: [track.userId],
+        references: [user.id],
+    }),
+}));
+
+export const friendListRelations = relations(friendList, ({ many, one }) => ({
+    friendship: many(friendship),
+    owner: one(user, {
+        fields: [friendList.userId],
+        references: [user.id],
+    }),
+}));
+
+export const friendshipRelations = relations(friendship, ({ one }) => ({
+    friendList: one(friendList, {
+        fields: [friendship.friendListId],
+        references: [friendList.id],
+    }),
+    friend: one(user, {
+        fields: [friendship.friendId],
         references: [user.id],
     }),
 }));

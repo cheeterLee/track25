@@ -79,12 +79,40 @@ export default function Sidebar({
                                                 Add new friend or group
                                             </DropdownMenuLabel>
                                             <DropdownMenuSeparator />
-                                            <DropdownMenuItem>
-                                                Add new friend
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                Create new group
-                                            </DropdownMenuItem>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        className='w-full'
+                                                    >
+                                                        <div className='w-full text-left'>
+                                                            Add new friend
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        Add new friend
+                                                    </DialogHeader>
+                                                </DialogContent>
+                                            </Dialog>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        className='w-full'
+                                                    >
+                                                        <div className='w-full text-left'>
+                                                            Create new group
+                                                        </div>
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        Create new group
+                                                    </DialogHeader>
+                                                </DialogContent>
+                                            </Dialog>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
