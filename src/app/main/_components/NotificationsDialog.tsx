@@ -9,12 +9,13 @@ import {
 import { db } from '@/db';
 import { invitation, user } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import { Bell } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { redirect } from 'next/navigation';
 import AcceptButton from './AcceptButton';
 import RejectButton from './RejectButton';
+import { formatDistance } from 'date-fns';
 
 export default async function NotificationsDialog() {
     const { user: authUser } = await validateRequest();
@@ -26,6 +27,7 @@ export default async function NotificationsDialog() {
         .select()
         .from(invitation)
         .innerJoin(user, eq(invitation.senderId, user.id))
+        .orderBy(desc(invitation.createdAt))
         .where(
             and(
                 eq(invitation.receiverId, authUser.id),
@@ -60,7 +62,7 @@ export default async function NotificationsDialog() {
                                     <AvatarImage src='https://github.com/shadcn.png' />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
-                                <div className='sm:text-md text-xs'>
+                                <div className='text-sm'>
                                     <span className='font-semibold'>
                                         {user.username}
                                     </span>{' '}
@@ -69,6 +71,13 @@ export default async function NotificationsDialog() {
                                         {invitation.type === 'friend'
                                             ? 'friend request'
                                             : 'group invitation'}
+                                    </span>{' '}
+                                    <span className='text-xs text-slate-500'>
+                                        {formatDistance(
+                                            invitation.createdAt,
+                                            Date.now(),
+                                            { addSuffix: true },
+                                        )}
                                     </span>
                                 </div>
                             </div>
@@ -77,9 +86,7 @@ export default async function NotificationsDialog() {
                                     type={invitation.type!}
                                     invitationId={invitation.id}
                                 />
-                                <RejectButton
-                                    invitationId={invitation.id}
-                                />
+                                <RejectButton invitationId={invitation.id} />
                             </div>
                         </Card>
                     ))}

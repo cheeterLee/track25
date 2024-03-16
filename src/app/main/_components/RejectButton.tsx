@@ -11,7 +11,7 @@ export default function RejectButton({
 }: {
     invitationId: string;
 }) {
-    const router = useRouter()
+    const router = useRouter();
     const handleOnClick = async () => {
         const { success, error } = await rejectRequest(invitationId);
         if (success) {
@@ -20,8 +20,8 @@ export default function RejectButton({
             });
         }
         startTransition(() => {
-            router.refresh()
-        }) 
+            router.refresh();
+        });
     };
 
     return (
