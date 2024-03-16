@@ -13,6 +13,8 @@ import { eq, and } from 'drizzle-orm';
 import { Bell } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { redirect } from 'next/navigation';
+import AcceptButton from './AcceptButton';
+import RejectButton from './RejectButton';
 
 export default async function NotificationsDialog() {
     const { user: authUser } = await validateRequest();
@@ -71,18 +73,13 @@ export default async function NotificationsDialog() {
                                 </div>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <Button
-                                    variant='outline'
-                                    className='sm:text-md text-xs'
-                                >
-                                    Accepted
-                                </Button>
-                                <Button
-                                    variant='outline'
-                                    className='sm:text-md text-xs'
-                                >
-                                    Rejected
-                                </Button>
+                                <AcceptButton
+                                    type={invitation.type!}
+                                    invitationId={invitation.id}
+                                />
+                                <RejectButton
+                                    invitationId={invitation.id}
+                                />
                             </div>
                         </Card>
                     ))}
