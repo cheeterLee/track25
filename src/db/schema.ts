@@ -17,7 +17,15 @@ export const tariffEnum = pgEnum('tariff', [
     'yearly',
 ]);
 
-export const invitationEnum = pgEnum('invitation_type', ['friend', 'group']);
+export const invitationTypeEnum = pgEnum('invitation_type', [
+    'friend',
+    'group',
+]);
+export const invitationStatusEnum = pgEnum('invitation_status', [
+    'pending',
+    'accepted',
+    'rejected',
+]);
 
 export const user = pgTable('user', {
     id: varchar('id', {
@@ -107,8 +115,8 @@ export const invitation = pgTable('invitation', {
     })
         .notNull()
         .references(() => user.id),
-    type: invitationEnum('type'),
-    accepted: boolean('accepted').default(false),
+    type: invitationTypeEnum('type'),
+    status: invitationStatusEnum('status').default('pending'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
