@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { user } from '@/db/schema';
+import { friendList, user } from '@/db/schema';
 import { lucia, validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Argon2id } from 'oslo/password';
@@ -58,6 +58,10 @@ export async function signup(
         id: userId,
         username: String(username),
         hashed_password: hashedPassword,
+    });
+
+    await db.insert(friendList).values({
+        userId: userId,
     });
 
     const session = await lucia.createSession(userId, {});

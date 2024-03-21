@@ -17,10 +17,27 @@ import SearchForm from './SearchForm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { db } from '@/db';
-import { user } from '@/db/schema';
+import { friendList, friendship, user } from '@/db/schema';
+import { validateRequest } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export default async function FriendsDialog() {
     const feedUsers = await db.select().from(user).limit(10);
+    const { user: authUser } = await validateRequest();
+    if (!authUser) {
+        redirect('/');
+    }
+
+    const data = await db.query.friendList.findFirst({
+        where: (friendList, { eq }) => eq(friendList.userId, authUser.id),
+        with: {
+            friendship: {
+                with: {
+                    friend: true,
+                },
+            },
+        },
+    });
 
     return (
         <Dialog>
@@ -85,7 +102,11 @@ export default async function FriendsDialog() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                    <TabsContent value='friends'>Friends</TabsContent>
+                    <TabsContent value='friends'>
+                        {data?.friendship.map((d) => (
+                            <div key={d.id}>{d.friend.username}</div>
+                        ))}
+                    </TabsContent>
                     <TabsContent value='groups'>Groups</TabsContent>
                 </Tabs>
             </DialogContent>

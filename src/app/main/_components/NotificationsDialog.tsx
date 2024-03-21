@@ -85,6 +85,7 @@ export default async function NotificationsDialog() {
                                 <AcceptButton
                                     type={invitation.type!}
                                     invitationId={invitation.id}
+                                    senderId={invitation.senderId}
                                 />
                                 <RejectButton invitationId={invitation.id} />
                             </div>
