@@ -54,6 +54,11 @@ export const friendship = pgTable('friendship', {
     friendListId: uuid('friend_list_id')
         .notNull()
         .references(() => friendList.id),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
     friendId: varchar('friend_id', {
         length: 255,
     })

@@ -22,6 +22,7 @@ import { validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import DeleteFriendButton from './DeleteFriendButton';
 
 export default async function FriendsDialog() {
     const feedUsers = await db.select().from(user).limit(10);
@@ -124,9 +125,9 @@ export default async function FriendsDialog() {
                                         <Button variant='outline'>
                                             Invite
                                         </Button>
-                                        <Button variant='outline'>
-                                            Delete
-                                        </Button>
+                                        <DeleteFriendButton
+                                            friendId={d.friendId}
+                                        />
                                     </div>
                                 </Card>
                             ))}

@@ -3,7 +3,7 @@
 import { db } from '@/db';
 import { validateRequest } from './auth';
 import { friendship, invitation } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export async function createInvitation(
     type: 'friend' | 'group',
@@ -67,13 +67,39 @@ export async function acceptFriendRequest(
 
     await db.insert(friendship).values({
         friendListId: receiverFriendList.id,
+        userId: user.id,
         friendId: senderId,
     });
 
     await db.insert(friendship).values({
         friendListId: senderFriendList.id,
+        userId: senderId,
         friendId: user.id,
     });
 
+    return { success: true, error: null };
+}
+
+export async function deleteFriend(friendId: string) {
+    const { user } = await validateRequest();
+    if (!user) {
+        return { success: false, error: 'no user' };
+    }
+    await db
+        .delete(friendship)
+        .where(
+            and(
+                eq(friendship.friendId, friendId),
+                eq(friendship.userId, user.id),
+            ),
+        );
+    await db
+        .delete(friendship)
+        .where(
+            and(
+                eq(friendship.userId, friendId),
+                eq(friendship.friendId, user.id),
+            ),
+        );
     return { success: true, error: null };
 }
