@@ -17,9 +17,11 @@ import SearchForm from './SearchForm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { db } from '@/db';
-import { friendList, friendship, user } from '@/db/schema';
+import { user } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default async function FriendsDialog() {
     const feedUsers = await db.select().from(user).limit(10);
@@ -47,7 +49,7 @@ export default async function FriendsDialog() {
                     Friends
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='flex min-h-[60vw] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
                 <DialogHeader></DialogHeader>
                 <Tabs defaultValue='friends' className='w-full'>
                     <div className='flex items-center justify-between'>
@@ -103,9 +105,32 @@ export default async function FriendsDialog() {
                         </DropdownMenu>
                     </div>
                     <TabsContent value='friends'>
-                        {data?.friendship.map((d) => (
-                            <div key={d.id}>{d.friend.username}</div>
-                        ))}
+                        <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
+                            {data?.friendship.map((d) => (
+                                <Card
+                                    key={d.id}
+                                    className='flex min-h-[60px] w-full items-center justify-between px-10'
+                                >
+                                    <div className='flex items-center gap-6'>
+                                        <Avatar className='hidden sm:block'>
+                                            <AvatarImage src='https://github.com/shadcn.png' />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                        <div key={d.id}>
+                                            {d.friend.username}
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <Button variant='outline'>
+                                            Invite
+                                        </Button>
+                                        <Button variant='outline'>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
                     </TabsContent>
                     <TabsContent value='groups'>Groups</TabsContent>
                 </Tabs>
