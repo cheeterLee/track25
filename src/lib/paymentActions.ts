@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { validateRequest } from './auth';
 import { db } from '@/db';
 import { getPremiumType } from './helper';
-import { subscription, user } from '@/db/schema';
+import { friendList, subscription, user } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { format } from 'date-fns';
 

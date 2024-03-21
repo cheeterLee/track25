@@ -20,3 +20,12 @@ export interface Plan {
     name: string;
     priceStr: string;
 }
+
+export interface User {
+    tariff: 'free' | 'monthly' | 'quarterly' | 'yearly' | null;
+    id: string;
+    username: string;
+    hashed_password: string;
+    isPremium: boolean | null;
+    subscriptionId: string | null;
+}
