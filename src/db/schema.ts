@@ -121,6 +121,7 @@ export const invitation = pgTable('invitation', {
         .notNull()
         .references(() => user.id),
     type: invitationTypeEnum('type'),
+    groupId: uuid('group_id').references(() => group.id),
     status: invitationStatusEnum('status').default('pending'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
 });
@@ -213,6 +214,10 @@ export const groupMemberRelations = relations(groupMember, ({ one }) => ({
     group: one(group, {
         fields: [groupMember.groupId],
         references: [group.id],
+    }),
+    member: one(user, {
+        fields: [groupMember.userId],
+        references: [user.id],
     }),
 }));
 

@@ -17,7 +17,7 @@ import SearchForm from './SearchForm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { db } from '@/db';
-import { user } from '@/db/schema';
+import { groupMember, user } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
@@ -38,6 +38,21 @@ export default async function FriendsDialog() {
             friendship: {
                 with: {
                     friend: true,
+                },
+            },
+        },
+    });
+
+    const groupData = await db.query.groupMember.findMany({
+        where: (groupMember, { eq }) => eq(groupMember.userId, authUser.id),
+        with: {
+            group: {
+                with: {
+                    groupMembers: {
+                        with: {
+                            member: true,
+                        },
+                    },
                 },
             },
         },
@@ -147,7 +162,33 @@ export default async function FriendsDialog() {
                     </TabsContent>
                     <TabsContent value='groups'>
                         <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
-                            group
+                            {groupData.map((g) => (
+                                <Card
+                                    key={g.id}
+                                    className='flex min-h-[60px] w-full items-center justify-between px-10'
+                                >
+                                    <div className='flex items-center gap-4'>
+                                        <div className='text-sm'>
+                                            Name:{' '}
+                                            <span className='text-base font-semibold'>
+                                                {g.group.groupName}
+                                            </span>
+                                        </div>
+                                        <div className='text-sm'>
+                                            Users:{' '}
+                                            {g.group.groupMembers.map((u) => (
+                                                <span
+                                                    key={u.id}
+                                                    className='text-base font-semibold'
+                                                >
+                                                    {u.member.username}{' '}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <Button variant='outline'>Quit</Button>
+                                </Card>
+                            ))}
                         </div>
                     </TabsContent>
                 </Tabs>

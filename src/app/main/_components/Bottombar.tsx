@@ -16,6 +16,8 @@ import SubscribeButton from './SubscribeButton';
 import { Plan } from '@/lib/type';
 import { validateSubscription } from '@/lib/paymentActions';
 import UnsubscribeButton from './UnsubscribeButton';
+import { logout } from '@/lib/authActions';
+import AuthForm from '@/components/AuthForm';
 
 const plans: Plan[] = [
     {
@@ -82,7 +84,13 @@ export default async function BottomBar({ user: authUser }: { user: User }) {
                         >
                             <div className='min-h-[250px] border-2 border-pink-200'></div>
                             <div className='flex justify-end'>
-                                <Button variant='destructive'>Logout</Button>
+                                <Button variant='destructive'>
+                                    <AuthForm action={logout}>
+                                        <Button variant='destructive'>
+                                            Logout
+                                        </Button>
+                                    </AuthForm>
+                                </Button>
                             </div>
                         </TabsContent>
                         <TabsContent

@@ -14,8 +14,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
+import { createGroup } from '@/lib/friendActions';
 import { User } from '@/lib/type';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { startTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -43,6 +46,8 @@ export default function CreateGroupForm({
 }: {
     friends: Friend[] | undefined;
 }) {
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -51,16 +56,15 @@ export default function CreateGroupForm({
         },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: 'You submitted the following values:',
-            description: (
-                <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-                    <code className='text-white'>
-                        {JSON.stringify(data, null, 2)}
-                    </code>
-                </pre>
-            ),
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        const { success } = await createGroup(data.groupName, data.friends);
+        if (success) {
+            toast({
+                title: 'Successfully sent group invitation',
+            });
+        }
+        startTransition(() => {
+            router.refresh();
         });
     }
 
