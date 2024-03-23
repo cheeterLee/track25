@@ -159,3 +159,15 @@ export async function acceptGroupInvitation(
 
     return { success: true, error: null };
 }
+
+export async function quitGroup(groupId: string) {
+    const { user } = await validateRequest();
+
+    if (!user) {
+        return { success: false, error: 'no user' };
+    }
+
+    await db.delete(groupMember).where(eq(groupMember.userId, user.id));
+
+    return { success: true, error: null };
+}

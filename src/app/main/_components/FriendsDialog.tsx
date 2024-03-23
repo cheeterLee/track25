@@ -24,6 +24,7 @@ import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DeleteFriendButton from './DeleteFriendButton';
 import CreateGroupForm from './CreateGroupForm';
+import QuitGroupButton from './QuitGroupButton';
 
 export default async function FriendsDialog() {
     const feedUsers = await db.select().from(user).limit(10);
@@ -186,7 +187,7 @@ export default async function FriendsDialog() {
                                             ))}
                                         </div>
                                     </div>
-                                    <Button variant='outline'>Quit</Button>
+                                    <QuitGroupButton groupId={g.groupId} />
                                 </Card>
                             ))}
                         </div>
