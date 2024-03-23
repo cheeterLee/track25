@@ -2,7 +2,6 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Contact, Plus } from 'lucide-react';
@@ -17,7 +16,7 @@ import SearchForm from './SearchForm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { db } from '@/db';
-import { groupMember, user } from '@/db/schema';
+import { user } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
@@ -149,9 +148,6 @@ export default async function FriendsDialog() {
                                             </div>
                                         </div>
                                         <div className='flex items-center gap-2'>
-                                            <Button variant='outline'>
-                                                Invite
-                                            </Button>
                                             <DeleteFriendButton
                                                 friendId={d.friendId}
                                             />
@@ -175,7 +171,7 @@ export default async function FriendsDialog() {
                                                 {g.group.groupName}
                                             </span>
                                         </div>
-                                        <div className='text-sm'>
+                                        <div className='hidden text-sm sm:block'>
                                             Users:{' '}
                                             {g.group.groupMembers.map((u) => (
                                                 <span
