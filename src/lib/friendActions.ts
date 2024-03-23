@@ -2,12 +2,13 @@
 
 import { db } from '@/db';
 import { validateRequest } from './auth';
-import { friendship, invitation } from '@/db/schema';
+import { friendship, group, groupMember, invitation } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 export async function createInvitation(
     type: 'friend' | 'group',
     receiverId: string,
+    groupId?: string,
 ) {
     const { user } = await validateRequest();
     if (!user) {
@@ -17,6 +18,7 @@ export async function createInvitation(
         senderId: user.id,
         receiverId: receiverId,
         type: type,
+        groupId: groupId === undefined ? null : groupId,
     });
     return { success: true, error: null };
 }
@@ -101,5 +103,71 @@ export async function deleteFriend(friendId: string) {
                 eq(friendship.friendId, user.id),
             ),
         );
+    return { success: true, error: null };
+}
+
+export async function createGroup(groupName: string, friendIds: string[]) {
+    const { user } = await validateRequest();
+
+    if (!user) {
+        return { success: false, error: 'no user' };
+    }
+
+    const { id: groupId } = (
+        await db
+            .insert(group)
+            .values({
+                creatorId: user.id,
+                groupName: groupName,
+            })
+            .returning()
+    )[0];
+
+    await db.insert(groupMember).values({
+        groupId: groupId,
+        userId: user.id,
+    });
+
+    for (const fid of friendIds) {
+        await createInvitation('group', fid, groupId);
+    }
+
+    return { success: true, error: null };
+}
+
+export async function acceptGroupInvitation(
+    invitationId: string,
+    groupId: string,
+) {
+    const { user } = await validateRequest();
+
+    if (!user) {
+        return { success: false, error: 'no user' };
+    }
+
+    await db.insert(groupMember).values({
+        groupId: groupId,
+        userId: user.id,
+    });
+
+    await db
+        .update(invitation)
+        .set({
+            status: 'accepted',
+        })
+        .where(eq(invitation.id, invitationId));
+
+    return { success: true, error: null };
+}
+
+export async function quitGroup(groupId: string) {
+    const { user } = await validateRequest();
+
+    if (!user) {
+        return { success: false, error: 'no user' };
+    }
+
+    await db.delete(groupMember).where(eq(groupMember.userId, user.id));
+
     return { success: true, error: null };
 }

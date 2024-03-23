@@ -2,7 +2,6 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Contact, Plus } from 'lucide-react';
@@ -23,6 +22,8 @@ import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DeleteFriendButton from './DeleteFriendButton';
+import CreateGroupForm from './CreateGroupForm';
+import QuitGroupButton from './QuitGroupButton';
 
 export default async function FriendsDialog() {
     const feedUsers = await db.select().from(user).limit(10);
@@ -37,6 +38,21 @@ export default async function FriendsDialog() {
             friendship: {
                 with: {
                     friend: true,
+                },
+            },
+        },
+    });
+
+    const groupData = await db.query.groupMember.findMany({
+        where: (groupMember, { eq }) => eq(groupMember.userId, authUser.id),
+        with: {
+            group: {
+                with: {
+                    groupMembers: {
+                        with: {
+                            member: true,
+                        },
+                    },
                 },
             },
         },
@@ -80,7 +96,7 @@ export default async function FriendsDialog() {
                                             </div>
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className='flex min-h-[60vw] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
+                                    <DialogContent className='flex min-h-[60vh] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
                                         <DialogHeader className='h-[10px]'></DialogHeader>
                                         <SearchForm feedUsers={feedUsers} />
                                     </DialogContent>
@@ -96,10 +112,13 @@ export default async function FriendsDialog() {
                                             </div>
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent>
+                                    <DialogContent className='flex max-h-[60vh] min-h-[60vh] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
                                         <DialogHeader>
                                             Create new group
                                         </DialogHeader>
+                                        <CreateGroupForm
+                                            friends={data?.friendship}
+                                        />
                                     </DialogContent>
                                 </Dialog>
                             </DropdownMenuContent>
@@ -107,33 +126,68 @@ export default async function FriendsDialog() {
                     </div>
                     <TabsContent value='friends'>
                         <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
-                            {data?.friendship.map((d) => (
+                            {data?.friendship.length === 0 ? (
+                                <div>
+                                    You don&apos;t have any friends yet :(
+                                </div>
+                            ) : (
+                                data?.friendship.map((d) => (
+                                    <Card
+                                        key={d.id}
+                                        className='flex min-h-[60px] w-full items-center justify-between px-10'
+                                    >
+                                        <div className='flex items-center gap-6'>
+                                            <Avatar className='hidden sm:block'>
+                                                <AvatarImage src='https://github.com/shadcn.png' />
+                                                <AvatarFallback>
+                                                    CN
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div key={d.id}>
+                                                {d.friend.username}
+                                            </div>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <DeleteFriendButton
+                                                friendId={d.friendId}
+                                            />
+                                        </div>
+                                    </Card>
+                                ))
+                            )}
+                        </div>
+                    </TabsContent>
+                    <TabsContent value='groups'>
+                        <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
+                            {groupData.map((g) => (
                                 <Card
-                                    key={d.id}
+                                    key={g.id}
                                     className='flex min-h-[60px] w-full items-center justify-between px-10'
                                 >
-                                    <div className='flex items-center gap-6'>
-                                        <Avatar className='hidden sm:block'>
-                                            <AvatarImage src='https://github.com/shadcn.png' />
-                                            <AvatarFallback>CN</AvatarFallback>
-                                        </Avatar>
-                                        <div key={d.id}>
-                                            {d.friend.username}
+                                    <div className='flex items-center gap-4'>
+                                        <div className='text-sm'>
+                                            Name:{' '}
+                                            <span className='text-base font-semibold'>
+                                                {g.group.groupName}
+                                            </span>
+                                        </div>
+                                        <div className='hidden text-sm sm:block'>
+                                            Users:{' '}
+                                            {g.group.groupMembers.map((u) => (
+                                                <span
+                                                    key={u.id}
+                                                    className='text-base font-semibold'
+                                                >
+                                                    {u.member.username}{' '}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
-                                    <div className='flex items-center gap-2'>
-                                        <Button variant='outline'>
-                                            Invite
-                                        </Button>
-                                        <DeleteFriendButton
-                                            friendId={d.friendId}
-                                        />
-                                    </div>
+                                    <QuitGroupButton groupId={g.groupId} />
                                 </Card>
                             ))}
                         </div>
                     </TabsContent>
-                    <TabsContent value='groups'>Groups</TabsContent>
                 </Tabs>
             </DialogContent>
         </Dialog>
