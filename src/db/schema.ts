@@ -125,6 +125,47 @@ export const invitation = pgTable('invitation', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const group = pgTable('group', {
+    id: uuid('id').primaryKey().defaultRandom().unique(),
+    groupName: text('group_name'),
+    creatorId: varchar('creator_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+});
+
+export const groupMember = pgTable('group_member', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    groupId: uuid('group_id')
+        .notNull()
+        .references(() => group.id),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+});
+
+export const accessList = pgTable('access_list', {
+    id: uuid('id').defaultRandom().unique().notNull(),
+    trackId: uuid('track_id')
+        .notNull()
+        .references(() => track.id),
+});
+
+export const access = pgTable('access', {
+    id: uuid('id').defaultRandom().notNull(),
+    accessListId: uuid('access_list_id')
+        .notNull()
+        .references(() => accessList.id),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+});
+
 //  ===== Relations =====
 export const userRelations = relations(user, ({ many }) => ({
     tracks: many(track),
@@ -134,6 +175,10 @@ export const trackRelations = relations(track, ({ one }) => ({
     owner: one(user, {
         fields: [track.userId],
         references: [user.id],
+    }),
+    accessList: one(accessList, {
+        fields: [track.id],
+        references: [accessList.trackId],
     }),
 }));
 
@@ -152,6 +197,36 @@ export const friendshipRelations = relations(friendship, ({ one }) => ({
     }),
     friend: one(user, {
         fields: [friendship.friendId],
+        references: [user.id],
+    }),
+}));
+
+export const groupRelations = relations(group, ({ many, one }) => ({
+    groupMembers: many(groupMember),
+    creator: one(user, {
+        fields: [group.creatorId],
+        references: [user.id],
+    }),
+}));
+
+export const groupMemberRelations = relations(groupMember, ({ one }) => ({
+    group: one(group, {
+        fields: [groupMember.groupId],
+        references: [group.id],
+    }),
+}));
+
+export const accessListRelations = relations(accessList, ({ many }) => ({
+    access: many(access),
+}));
+
+export const accessRelations = relations(access, ({ one }) => ({
+    accessList: one(accessList, {
+        fields: [access.accessListId],
+        references: [accessList.id],
+    }),
+    userWithAccess: one(user, {
+        fields: [access.userId],
         references: [user.id],
     }),
 }));
