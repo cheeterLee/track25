@@ -28,7 +28,7 @@ export default function InvitationButton({
             variant='secondary'
             disabled={buttonDisabled}
         >
-            {buttonDisabled ? "Already Added" : "Add"}
+            {buttonDisabled ? 'Already Added' : 'Add'}
         </Button>
     );
 }
