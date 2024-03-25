@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { access, accessList, track } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 export async function shareWithUser(
     trackId: string | undefined,
@@ -29,6 +29,34 @@ export async function shareWithUser(
             userId: userId,
         });
     }
+
+    return { success: true, error: null };
+}
+
+export async function removeUserAccess(
+    trackId: string | undefined,
+    userId: string,
+) {
+    if (!trackId) {
+        return { success: false, error: 'no trackId' };
+    }
+
+    const data = await db.query.accessList.findFirst({
+        where: eq(accessList.trackId, trackId),
+    });
+
+    if (!data) {
+        return {
+            success: false,
+            error: 'cannot find corresponding access list for track',
+        };
+    }
+
+    await db
+        .delete(access)
+        .where(
+            and(eq(access.userId, userId), eq(access.accessListId, data.id)),
+        );
 
     return { success: true, error: null };
 }

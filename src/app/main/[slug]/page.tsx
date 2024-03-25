@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ShareFriendsForm from '../_components/ShareFriendsForm';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import RemoveAccessButton from './_components/RemoveAccessButton';
 
 export default async function TrackDetail({
     params,
@@ -97,7 +99,7 @@ export default async function TrackDetail({
                                 Share
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className='flex min-h-[60vw] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
+                        <DialogContent className='flex min-h-[60vh] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
                             <DialogHeader>
                                 Share with friends or group
                             </DialogHeader>
@@ -129,10 +131,62 @@ export default async function TrackDetail({
                     </Button>
                 </div>
             </div>
-            <div className='flex h-[200px] w-full flex-col items-center justify-center'>
-                <div className='text-2xl'>{params.slug}</div>
-                <div className='mt-2'>
-                    Submitted by: <span>{user.username}</span>
+            <div className='flex h-[200px] w-full flex-col items-center justify-center gap-1'>
+                <div className='mt-4 text-2xl'>{params.slug}</div>
+                <div className='mt-2 flex items-center gap-2'>
+                    Submitted by:{' '}
+                    <span className='flex items-center gap-1'>
+                        <Avatar>
+                            <AvatarImage src='https://github.com/shadcn.png' />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        {user.username}
+                    </span>
+                </div>
+                <div className='mt-4 flex w-full items-center justify-between px-4'>
+                    <div>
+                        <span className='text-sm font-semibold'>Access: </span>
+                        <span className='text-sm'>
+                            {userWithAccess?.access.length ?? 0} people
+                        </span>
+                    </div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                size='sm'
+                                variant='outline'
+                                disabled={user.id !== track?.userId}
+                            >
+                                Manage Access
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className='flex max-h-[60vh] min-h-[60vh] min-w-[80vw] flex-col overflow-y-scroll sm:min-h-[600px] sm:min-w-[800px]'>
+                            <DialogHeader>Manage Access</DialogHeader>
+                            {userWithAccess?.access.map((u) => (
+                                <Card
+                                    key={u.id}
+                                    className='flex min-h-[60px] w-full items-center justify-between px-10'
+                                >
+                                    <div className='flex items-center gap-6'>
+                                        <Avatar className='hidden sm:block'>
+                                            <AvatarImage src='https://github.com/shadcn.png' />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </Avatar>
+                                        <div>{u.userWithAccess.username}</div>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <RemoveAccessButton
+                                            trackId={track?.id}
+                                            userId={u.userWithAccess.id}
+                                            buttonDisabled={
+                                                user.id === u.userWithAccess.id
+                                            }
+                                        />
+                                    </div>
+                                </Card>
+                            ))}
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
             <div className='grid w-full grid-cols-2 gap-1 px-2'>
