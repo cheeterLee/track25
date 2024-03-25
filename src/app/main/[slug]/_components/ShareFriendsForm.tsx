@@ -9,7 +9,6 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
@@ -59,6 +58,9 @@ export default function ShareFriendsForm({
         if (success) {
             toast({
                 title: 'successfully shared',
+            });
+            startTransition(() => {
+                router.refresh();
             });
         }
     }

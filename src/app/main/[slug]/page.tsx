@@ -14,9 +14,10 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import ShareFriendsForm from '../_components/ShareFriendsForm';
+import ShareFriendsForm from './_components/ShareFriendsForm';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import RemoveAccessButton from './_components/RemoveAccessButton';
+import ShareGroupsForm from './_components/ShareGroupsForm';
 
 export default async function TrackDetail({
     params,
@@ -118,7 +119,12 @@ export default async function TrackDetail({
                                         trackId={track?.id}
                                     />
                                 </TabsContent>
-                                <TabsContent value='groups'>groups</TabsContent>
+                                <TabsContent value='groups'>
+                                    <ShareGroupsForm
+                                        groups={groupData}
+                                        trackId={track?.id}
+                                    />
+                                </TabsContent>
                             </Tabs>
                         </DialogContent>
                     </Dialog>
