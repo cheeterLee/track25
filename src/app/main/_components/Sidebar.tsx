@@ -20,14 +20,34 @@ import ToDetailButton from './ToDetailButton';
 import BottomBar from './Bottombar';
 import FriendsDialog from './FriendsDialog';
 import NotificationsDialog from './NotificationsDialog';
+import { db } from '@/db';
 
-export default function Sidebar({
+export default async function Sidebar({
     myTrackData,
     user,
 }: {
     myTrackData: Track[];
     user: User;
 }) {
+    const allTrackData = await db.query.access.findMany({
+        where: (access, { eq }) => eq(access.userId, user.id),
+        with: {
+            accessList: {
+                with: {
+                    accessToTrack: {
+                        with: {
+                            owner: {
+                                columns: {
+                                    username: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
     return (
         <div className='flex min-h-screen w-screen flex-col sm:w-[430px]'>
             <div className='mx-2 flex h-[60px] max-w-full items-center justify-between'>
@@ -109,7 +129,68 @@ export default function Sidebar({
                             ))
                         )}
                     </TabsContent>
-                    <TabsContent value='all'>all tracks</TabsContent>
+                    <TabsContent value='all' className='flex flex-col px-2'>
+                        {allTrackData.length === 0 ? (
+                            <div className='flex h-full w-full items-center justify-center'>
+                                You don&apos;t have any track yet :(
+                            </div>
+                        ) : (
+                            allTrackData.map((d) => (
+                                <div
+                                    key={d.id}
+                                    className='h-[100px] w-full px-2 py-1'
+                                >
+                                    <Card className='flex h-full items-center justify-between px-2'>
+                                        <div className='flex flex-col gap-2'>
+                                            <div>
+                                                {
+                                                    d.accessList.accessToTrack
+                                                        .slug
+                                                }{' '}
+                                                <span className='text-sm font-semibold text-purple-400'>
+                                                    by:{' '}
+                                                    {
+                                                        d.accessList
+                                                            .accessToTrack.owner
+                                                            .username
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div className='flex items-center gap-2 text-sm'>
+                                                <div className='flex items-center gap-1'>
+                                                    <div className='h-[5px] w-[5px] rounded-full bg-orange-300'></div>
+                                                    <div>
+                                                        elevation:{' '}
+                                                        {
+                                                            d.accessList
+                                                                .accessToTrack
+                                                                .elevation
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className='flex items-center gap-1'>
+                                                    <div className='h-[5px] w-[5px] rounded-full bg-teal-500'></div>
+                                                    <div>
+                                                        distance:{' '}
+                                                        {
+                                                            d.accessList
+                                                                .accessToTrack
+                                                                .distance
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ToDetailButton
+                                            slug={
+                                                d.accessList.accessToTrack.slug
+                                            }
+                                        />
+                                    </Card>
+                                </div>
+                            ))
+                        )}
+                    </TabsContent>
                 </div>
             </Tabs>
             <BottomBar user={user} />

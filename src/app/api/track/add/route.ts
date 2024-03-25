@@ -6,7 +6,7 @@ import toGeoJson from '@mapbox/togeojson';
 import { Track, TrackReqParam } from '@/lib/type';
 // @ts-ignore
 import length from '@turf/length';
-import { track } from '@/db/schema';
+import { access, accessList, track } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
 // import { revalidatePath } from 'next/cache';
 
@@ -46,9 +46,26 @@ export async function POST(request: Request): Promise<NextResponse> {
         downloadTimes: 0,
     };
 
-    await db.insert(track).values(param);
+    // create track
+    const { id: trackId } = (
+        await db.insert(track).values(param).returning()
+    )[0];
 
-    // revalidatePath('/main', 'page');
+    // create access list for the track
+    const { id: accessListId } = (
+        await db
+            .insert(accessList)
+            .values({
+                trackId: trackId,
+            })
+            .returning()
+    )[0];
+
+    // add current user access
+    await db.insert(access).values({
+        accessListId: accessListId,
+        userId: user.id,
+    });
 
     return NextResponse.json({ code: 200 });
 }

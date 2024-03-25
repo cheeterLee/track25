@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { validateRequest } from './auth';
-import { friendship, group, groupMember, invitation } from '@/db/schema';
+import { friendship, group, groupMember, invitation, user } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 export async function createInvitation(
@@ -52,6 +52,16 @@ export async function acceptFriendRequest(
             status: 'accepted',
         })
         .where(eq(invitation.id, invitationId));
+
+    const existingFriendsIds = (
+        await db.query.friendship.findMany({
+            where: eq(friendship.userId, user.id),
+        })
+    ).map((f) => f.friendId);
+
+    if (existingFriendsIds.includes(senderId)) {
+        return { success: true, error: 'duplicate request' };
+    }
 
     const receiverFriendList = await db.query.friendList.findFirst({
         where: (friendList, { eq }) => eq(friendList.userId, user.id),
@@ -170,4 +180,19 @@ export async function quitGroup(groupId: string) {
     await db.delete(groupMember).where(eq(groupMember.userId, user.id));
 
     return { success: true, error: null };
+}
+
+export async function searchUser(searchText: string) {
+    const { user: authUser } = await validateRequest();
+
+    if (!authUser) {
+        return { success: false, error: 'no user' };
+    }
+
+    const regex = new RegExp(searchText);
+    const allUsers = await db.select().from(user);
+    const matchedUsers = allUsers.filter(
+        (u) => regex.test(u.username) && u.id != authUser.id,
+    );
+    return { matchedUsers };
 }
