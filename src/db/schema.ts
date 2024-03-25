@@ -221,8 +221,12 @@ export const groupMemberRelations = relations(groupMember, ({ one }) => ({
     }),
 }));
 
-export const accessListRelations = relations(accessList, ({ many }) => ({
+export const accessListRelations = relations(accessList, ({ many, one }) => ({
     access: many(access),
+    accessToTrack: one(track, {
+        fields: [accessList.trackId],
+        references: [track.id],
+    }),
 }));
 
 export const accessRelations = relations(access, ({ one }) => ({
