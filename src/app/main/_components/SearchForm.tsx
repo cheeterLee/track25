@@ -10,7 +10,13 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import InvitationButton from './InvitationButton';
 
-export default function SearchForm({ feedUsers }: { feedUsers: User[] }) {
+export default function SearchForm({
+    feedUsers,
+    existingFriendsIds,
+}: {
+    feedUsers: User[];
+    existingFriendsIds: string[];
+}) {
     const [matchedUsers, setMatchedUsers] = useState<User[] | null>(null);
 
     return (
@@ -49,6 +55,9 @@ export default function SearchForm({ feedUsers }: { feedUsers: User[] }) {
                                     <InvitationButton
                                         type='friend'
                                         receiverId={u.id}
+                                        buttonDisabled={existingFriendsIds.includes(
+                                            u.id,
+                                        )}
                                     />
                                 </Card>
                             ))}

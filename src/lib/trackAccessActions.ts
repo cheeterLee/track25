@@ -12,22 +12,37 @@ export async function shareWithUser(
         return { success: false, error: 'no trackId or no userIds' };
     }
 
-    const data = await db.query.accessList.findFirst({
+    const accessListForTrack = await db.query.accessList.findFirst({
         where: eq(accessList.trackId, trackId),
     });
 
-    if (!data) {
+    if (!accessListForTrack) {
         return {
             success: false,
             error: 'cannot find corresponding access list for track',
         };
     }
 
+    const userWithAccessToTrack = (
+        await db.query.access.findMany({
+            where: eq(access.accessListId, accessListForTrack.id),
+            with: {
+                userWithAccess: {
+                    columns: {
+                        id: true,
+                    },
+                },
+            },
+        })
+    ).map((el) => el.userWithAccess.id);
+
     for (const userId of userIds) {
-        await db.insert(access).values({
-            accessListId: data.id,
-            userId: userId,
-        });
+        if (!userWithAccessToTrack.includes(userId)) {
+            await db.insert(access).values({
+                accessListId: accessListForTrack.id,
+                userId: userId,
+            });
+        }
     }
 
     return { success: true, error: null };

@@ -7,9 +7,11 @@ import { createInvitation } from '@/lib/friendActions';
 export default function InvitationButton({
     type,
     receiverId,
+    buttonDisabled,
 }: {
     type: 'friend' | 'group';
     receiverId: string;
+    buttonDisabled: boolean;
 }) {
     const handleOnClick = async () => {
         const { success, error } = await createInvitation(type, receiverId);
@@ -21,8 +23,12 @@ export default function InvitationButton({
     };
 
     return (
-        <Button onClick={handleOnClick} variant='secondary'>
-            Add
+        <Button
+            onClick={handleOnClick}
+            variant='secondary'
+            disabled={buttonDisabled}
+        >
+            {buttonDisabled ? "Already Added" : "Add"}
         </Button>
     );
 }
