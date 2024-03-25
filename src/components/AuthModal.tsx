@@ -59,6 +59,7 @@ export default function AuthModal() {
                                         <Input
                                             id='password'
                                             name='password'
+                                            type='password'
                                             defaultValue=''
                                         />
                                     </div>

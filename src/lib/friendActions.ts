@@ -53,6 +53,16 @@ export async function acceptFriendRequest(
         })
         .where(eq(invitation.id, invitationId));
 
+    const existingFriendsIds = (
+        await db.query.friendship.findMany({
+            where: eq(friendship.userId, user.id),
+        })
+    ).map((f) => f.friendId);
+
+    if (existingFriendsIds.includes(senderId)) {
+        return { success: true, error: 'duplicate request' };
+    }
+
     const receiverFriendList = await db.query.friendList.findFirst({
         where: (friendList, { eq }) => eq(friendList.userId, user.id),
     });

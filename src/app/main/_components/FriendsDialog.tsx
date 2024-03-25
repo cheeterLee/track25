@@ -142,7 +142,7 @@ export default async function FriendsDialog() {
                     <TabsContent value='friends'>
                         <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
                             {data?.friendship.length === 0 ? (
-                                <div>
+                                <div className='mt-6 text-center text-lg font-semibold'>
                                     You don&apos;t have any friends yet :(
                                 </div>
                             ) : (
@@ -174,33 +174,41 @@ export default async function FriendsDialog() {
                     </TabsContent>
                     <TabsContent value='groups'>
                         <div className='flex max-h-[50vh] flex-col items-center gap-2 overflow-y-scroll'>
-                            {groupData.map((g) => (
-                                <Card
-                                    key={g.id}
-                                    className='flex min-h-[60px] w-full items-center justify-between px-10'
-                                >
-                                    <div className='flex items-center gap-4'>
-                                        <div className='text-sm'>
-                                            Name:{' '}
-                                            <span className='text-base font-semibold'>
-                                                {g.group.groupName}
-                                            </span>
-                                        </div>
-                                        <div className='hidden text-sm sm:block'>
-                                            Users:{' '}
-                                            {g.group.groupMembers.map((u) => (
-                                                <span
-                                                    key={u.id}
-                                                    className='text-base font-semibold'
-                                                >
-                                                    {u.member.username}{' '}
+                            {groupData.length === 0 ? (
+                                <div className='mt-6 text-center text-lg font-semibold'>
+                                    You don&apos;t have any groups yet :(
+                                </div>
+                            ) : (
+                                groupData.map((g) => (
+                                    <Card
+                                        key={g.id}
+                                        className='flex min-h-[60px] w-full items-center justify-between px-10'
+                                    >
+                                        <div className='flex items-center gap-4'>
+                                            <div className='text-sm'>
+                                                Name:{' '}
+                                                <span className='text-base font-semibold'>
+                                                    {g.group.groupName}
                                                 </span>
-                                            ))}
+                                            </div>
+                                            <div className='hidden text-sm sm:block'>
+                                                Users:{' '}
+                                                {g.group.groupMembers.map(
+                                                    (u) => (
+                                                        <span
+                                                            key={u.id}
+                                                            className='text-base font-semibold'
+                                                        >
+                                                            {u.member.username}{' '}
+                                                        </span>
+                                                    ),
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <QuitGroupButton groupId={g.groupId} />
-                                </Card>
-                            ))}
+                                        <QuitGroupButton groupId={g.groupId} />
+                                    </Card>
+                                ))
+                            )}
                         </div>
                     </TabsContent>
                 </Tabs>
