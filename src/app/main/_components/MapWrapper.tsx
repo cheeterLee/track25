@@ -1,14 +1,24 @@
 'use client';
 
-import { Track } from '@/lib/type';
+import { SharedTrack, Track } from '@/lib/type';
 import mapboxgl from 'mapbox-gl';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { useTrackStore } from '@/providers/TrackStoreProvider';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_KEY ?? '';
 
-export default function MapWrapper({ myTrackData }: { myTrackData: Track[] }) {
+export default function MapWrapper({
+    myTrackData,
+    allTrackData,
+}: {
+    myTrackData: Track[];
+    allTrackData: SharedTrack[];
+}) {
+    const { dataToShow } = useTrackStore((state) => state);
+    console.log('dataToShow', dataToShow);
+
     const mapContainer = useRef(null);
     const map = useRef<mapboxgl.Map | null>(null);
     const [lng, setLng] = useState(7.161);

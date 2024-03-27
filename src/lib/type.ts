@@ -15,6 +15,17 @@ export interface Track {
     downloadTimes: number;
 }
 
+export interface SharedTrack {
+    id: string;
+    accessList: {
+        accessToTrack: Track & {
+            owner: {
+                username: string;
+            };
+        };
+    };
+}
+
 export interface Plan {
     id: string;
     name: string;
