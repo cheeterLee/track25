@@ -4,7 +4,7 @@ import { SharedTrack, Track } from '@/lib/type';
 import mapboxgl from 'mapbox-gl';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useTrackStore } from '@/providers/TrackStoreProvider';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_KEY ?? '';
@@ -16,29 +16,48 @@ export default function MapWrapper({
     myTrackData: Track[];
     allTrackData: SharedTrack[];
 }) {
-    const { dataToShow } = useTrackStore((state) => state);
-    console.log('dataToShow', dataToShow);
+    // Local states for the map
+    const [lng, setLng] = useState<number>(7.161);
+    const [lat, setLat] = useState<number>(47.319);
+    const [zoom, setZoom] = useState<number>(6);
 
+    // Ref for the map to avoid unnecessary rerender
     const mapContainer = useRef(null);
     const map = useRef<mapboxgl.Map | null>(null);
-    const [lng, setLng] = useState(7.161);
-    const [lat, setLat] = useState(47.319);
-    const [zoom, setZoom] = useState(6);
+
+    // Next.js router instance
     const router = useRouter();
 
+    // Retrieve the current state of data to show from Zustand store
+    const { dataToShow } = useTrackStore((state) => state);
+    // Retrieve the current state of the app theme
     const { theme } = useTheme();
 
-    const addTrackLayers = useCallback(() => {
-        myTrackData.forEach((track) => {
-            const geoJson = JSON.parse(track.path);
-            map.current?.addSource(track.slug, {
+    // Cache the result of different tracks between 'my tracks' and 'all tracks' for better performance
+    const diffLayers = useMemo(() => {
+        const myTrackSlugs = myTrackData.map((track) => track.slug);
+        const diffSlugs = allTrackData
+            .map((track) => track.accessList.accessToTrack.slug)
+            .filter((slug) => !myTrackSlugs.includes(slug));
+        return new Set(diffSlugs);
+    }, [myTrackData, allTrackData]);
+
+    // State indicating whether the map has loaded the corresponding style
+    const [mapStyleLoaded, setMapStyleLoaded] = useState<boolean>(false);
+
+    // Function to add all track data the user has access to as map layers
+    // When user is viewing my tracks on first render, all layers of shared tracks will be hidden
+    const addLayersAllTrackData = useCallback(() => {
+        allTrackData.forEach((track) => {
+            const geoJson = JSON.parse(track.accessList.accessToTrack.path);
+            map.current?.addSource(track.accessList.accessToTrack.slug, {
                 type: 'geojson',
                 data: geoJson,
             });
             map.current?.addLayer({
-                id: track.slug,
+                id: track.accessList.accessToTrack.slug,
                 type: 'line',
-                source: track.slug,
+                source: track.accessList.accessToTrack.slug,
                 layout: {
                     'line-join': 'round',
                     'line-cap': 'round',
@@ -49,38 +68,104 @@ export default function MapWrapper({
                 },
             });
             map.current?.addLayer({
-                id: `${track.slug}-fill`,
+                id: `${track.accessList.accessToTrack.slug}-fill`,
                 type: 'fill',
-                source: track.slug,
+                source: track.accessList.accessToTrack.slug,
                 paint: {
                     'fill-color': 'transparent',
                     'fill-outline-color': 'transparent',
                 },
             });
-            map.current?.on('mouseenter', `${track.slug}-fill`, () => {
-                map.current!.getCanvas().style.cursor = 'pointer';
-                map.current!.setPaintProperty(track.slug, 'line-width', 8);
-            });
-            map.current?.on('mouseleave', `${track.slug}-fill`, () => {
-                map.current!.getCanvas().style.cursor = '';
-                map.current!.setPaintProperty(track.slug, 'line-width', 4);
-            });
-            map.current?.on('click', `${track.slug}-fill`, () => {
-                const coords = geoJson.features[0].geometry.coordinates;
-                const bounds = coords.reduce(
-                    (b: any, coord: any) => {
-                        return b.extend(coord);
-                    },
-                    new mapboxgl.LngLatBounds(coords[0], coords[0]),
-                );
-                map.current?.fitBounds(bounds, {
-                    padding: 20,
-                });
-                router.push(`/main/${track.slug}`);
-            });
-        });
-    }, [myTrackData, router]);
 
+            if (
+                diffLayers.has(track.accessList.accessToTrack.slug) &&
+                dataToShow === 'my'
+            ) {
+                map.current?.setLayoutProperty(
+                    track.accessList.accessToTrack.slug,
+                    'visibility',
+                    'none',
+                );
+                map.current?.setLayoutProperty(
+                    `${track.accessList.accessToTrack.slug}-fill`,
+                    'visibility',
+                    'none',
+                );
+            }
+
+            map.current?.on(
+                'mouseenter',
+                `${track.accessList.accessToTrack.slug}-fill`,
+                () => {
+                    map.current!.getCanvas().style.cursor = 'pointer';
+                    map.current!.setPaintProperty(
+                        track.accessList.accessToTrack.slug,
+                        'line-width',
+                        8,
+                    );
+                },
+            );
+            map.current?.on(
+                'mouseleave',
+                `${track.accessList.accessToTrack.slug}-fill`,
+                () => {
+                    map.current!.getCanvas().style.cursor = '';
+                    map.current!.setPaintProperty(
+                        track.accessList.accessToTrack.slug,
+                        'line-width',
+                        4,
+                    );
+                },
+            );
+            map.current?.on(
+                'click',
+                `${track.accessList.accessToTrack.slug}-fill`,
+                () => {
+                    const coords = geoJson.features[0].geometry.coordinates;
+                    const bounds = coords.reduce(
+                        (b: any, coord: any) => {
+                            return b.extend(coord);
+                        },
+                        new mapboxgl.LngLatBounds(coords[0], coords[0]),
+                    );
+                    map.current?.fitBounds(bounds, {
+                        padding: 20,
+                    });
+                    router.push(`/main/${track.accessList.accessToTrack.slug}`);
+                },
+            );
+        });
+    }, [allTrackData, router, diffLayers, dataToShow]);
+
+    // Function to show all different layers between 'my tracks' and 'all tracks'
+    const showAllDiffLayers = useCallback(() => {
+        for (const slug of diffLayers) {
+            if (map.current) {
+                map.current.setLayoutProperty(slug, 'visibility', 'visible');
+                map.current.setLayoutProperty(
+                    `${slug}-fill`,
+                    'visibility',
+                    'visible',
+                );
+            }
+        }
+    }, [diffLayers]);
+
+    // Function to show hide different layers between 'my tracks' and 'all tracks'
+    const hideAllDiffLayers = useCallback(() => {
+        for (const slug of diffLayers) {
+            if (map.current) {
+                map.current.setLayoutProperty(slug, 'visibility', 'none');
+                map.current.setLayoutProperty(
+                    `${slug}-fill`,
+                    'visibility',
+                    'none',
+                );
+            }
+        }
+    }, [diffLayers]);
+
+    // Effect to initialize the map
     useEffect(() => {
         if (map.current) {
             return;
@@ -96,21 +181,44 @@ export default function MapWrapper({
             zoom: zoom,
         });
 
+        // Attach an event listener to listen for the initial map load
         map.current.on('load', () => {
-            addTrackLayers();
+            addLayersAllTrackData();
         });
 
+        // Attach an event listener to listen for style.load event
         map.current.on('style.load', () => {
-            addTrackLayers();
+            // Set the state of map style loaded to true
+            setMapStyleLoaded(true);
+            addLayersAllTrackData();
         });
-    }, [lng, lat, zoom, theme, addTrackLayers]);
+    }, [lng, lat, zoom, theme, addLayersAllTrackData]);
 
+    // Effect to show and hide the map layers when user switch between 'my tracks' and 'all tracks'
     useEffect(() => {
-        map.current?.setStyle(
-            theme === 'dark'
-                ? 'mapbox://styles/mapbox/dark-v11'
-                : 'mapbox://styles/mapbox/outdoors-v11',
-        );
+        if (map.current && mapStyleLoaded) {
+            if (dataToShow === 'all') {
+                // Show diff layers
+                showAllDiffLayers();
+            } else if (dataToShow === 'my') {
+                // Hide diff layers
+                hideAllDiffLayers();
+            }
+        }
+    }, [dataToShow, showAllDiffLayers, hideAllDiffLayers, mapStyleLoaded]);
+
+    // Effect to synchronize map theme to global app theme
+    useEffect(() => {
+        if (map.current) {
+            // Set the state of map style loaded to false,
+            // the state will be set to true when the style.loaded event listener fires
+            setMapStyleLoaded(false);
+            map.current.setStyle(
+                theme === 'dark'
+                    ? 'mapbox://styles/mapbox/dark-v11'
+                    : 'mapbox://styles/mapbox/outdoors-v11',
+            );
+        }
     }, [theme]);
 
     return (
