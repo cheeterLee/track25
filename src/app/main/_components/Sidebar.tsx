@@ -21,6 +21,7 @@ import BottomBar from './Bottombar';
 import FriendsDialog from './FriendsDialog';
 import NotificationsDialog from './NotificationsDialog';
 import { db } from '@/db';
+import TrackDataSwitcher from './TrackDataSwitcher';
 
 export default async function Sidebar({
     myTrackData,
@@ -68,10 +69,11 @@ export default async function Sidebar({
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
                 <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 shadow-sm dark:border-slate-300'>
-                    <TabsList className='gap-1'>
+                    {/* <TabsList className='gap-1'>
                         <TabsTrigger value='my'>My tracks</TabsTrigger>
                         <TabsTrigger value='all'>All tracks</TabsTrigger>
-                    </TabsList>
+                    </TabsList> */}
+                    <TrackDataSwitcher />
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button
