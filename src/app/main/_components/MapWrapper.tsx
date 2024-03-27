@@ -54,6 +54,7 @@ export default function MapWrapper({
                 type: 'geojson',
                 data: geoJson,
             });
+
             map.current?.addLayer({
                 id: track.accessList.accessToTrack.slug,
                 type: 'line',
@@ -64,7 +65,7 @@ export default function MapWrapper({
                 },
                 paint: {
                     'line-color': 'red',
-                    'line-width': 4,
+                    'line-width': 6,
                 },
             });
             map.current?.addLayer({
@@ -93,18 +94,43 @@ export default function MapWrapper({
                 );
             }
 
+            // Create a popup for the track on hover
+            const popup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false,
+                className: 'track-popup',
+            });
+
             map.current?.on(
                 'mouseenter',
                 `${track.accessList.accessToTrack.slug}-fill`,
-                () => {
+                (event) => {
                     map.current!.getCanvas().style.cursor = 'pointer';
                     map.current!.setPaintProperty(
                         track.accessList.accessToTrack.slug,
                         'line-width',
                         8,
                     );
+
+                    const coords = event.lngLat; // Capture mouse pointer lng lat to show popup
+
+                    // Implement popup with raw html
+                    popup
+                        .setLngLat(coords)
+                        .setHTML(
+                            `<div class="popup-container">
+                            <div class="popup-up">${track.accessList.accessToTrack.slug}</div>
+                            <div class="popup-author">By: ${track.accessList.accessToTrack.owner.username}</div>
+                            <div class="popup-main">
+                            <div>Distance: ${track.accessList.accessToTrack.distance}</div>
+                            <div>Elevation: ${track.accessList.accessToTrack.elevation}</div>
+                            </div>
+                            </div>`,
+                        )
+                        .addTo(map.current!);
                 },
             );
+
             map.current?.on(
                 'mouseleave',
                 `${track.accessList.accessToTrack.slug}-fill`,
@@ -113,10 +139,13 @@ export default function MapWrapper({
                     map.current!.setPaintProperty(
                         track.accessList.accessToTrack.slug,
                         'line-width',
-                        4,
+                        6,
                     );
+                    // Remove popup on mouse leave
+                    popup.remove();
                 },
             );
+
             map.current?.on(
                 'click',
                 `${track.accessList.accessToTrack.slug}-fill`,
