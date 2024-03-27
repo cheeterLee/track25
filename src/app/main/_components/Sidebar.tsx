@@ -50,7 +50,7 @@ export default async function Sidebar({
     });
 
     return (
-        <div className='flex min-h-screen w-screen flex-col sm:w-[430px]'>
+        <div className='flex max-h-screen min-h-screen w-screen flex-col sm:w-[430px]'>
             <div className='mx-2 flex h-[60px] max-w-full items-center justify-between'>
                 <Button variant='outline' size='icon'>
                     <Link href='/'>
@@ -93,7 +93,7 @@ export default async function Sidebar({
                     </Dialog>
                 </div>
 
-                <div className='max-w-full flex-1'>
+                <div className='max-h-[62vh] max-w-full flex-1 overflow-y-scroll'>
                     <TabsContent value='my' className='flex flex-col px-2'>
                         {myTrackData.length === 0 ? (
                             <div className='flex h-full w-full items-center justify-center'>

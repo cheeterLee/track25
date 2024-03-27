@@ -20,6 +20,10 @@ export default function MapWrapper({
     const [lng, setLng] = useState<number>(7.161);
     const [lat, setLat] = useState<number>(47.319);
     const [zoom, setZoom] = useState<number>(6);
+    const [currentLayers, setCurrentLayers] = useState<SharedTrack[]>([]);
+
+    // State indicating whether the map has loaded the corresponding style
+    const [mapStyleLoaded, setMapStyleLoaded] = useState<boolean>(false);
 
     // Ref for the map to avoid unnecessary rerender
     const mapContainer = useRef(null);
@@ -28,8 +32,12 @@ export default function MapWrapper({
     // Next.js router instance
     const router = useRouter();
 
-    // Retrieve the current state of data to show from Zustand store
-    const { dataToShow } = useTrackStore((state) => state);
+    // Retrieve states and actions from Zustand store, including
+    // 1. State of data to show on the map, either "my tracks" or "all tracks"
+    // 2. State of whether a new track has just been successfully uploaded
+    const { dataToShow, justUploaded, setJustUploadedFalse } = useTrackStore(
+        (state) => state,
+    );
     // Retrieve the current state of the app theme
     const { theme } = useTheme();
 
@@ -42,13 +50,9 @@ export default function MapWrapper({
         return new Set(diffSlugs);
     }, [myTrackData, allTrackData]);
 
-    // State indicating whether the map has loaded the corresponding style
-    const [mapStyleLoaded, setMapStyleLoaded] = useState<boolean>(false);
-
-    // Function to add all track data the user has access to as map layers
-    // When user is viewing my tracks on first render, all layers of shared tracks will be hidden
-    const addLayersAllTrackData = useCallback(() => {
-        allTrackData.forEach((track) => {
+    // Function to add a single layer to the map
+    const addLayer = useCallback(
+        (track: SharedTrack) => {
             const geoJson = JSON.parse(track.accessList.accessToTrack.path);
             map.current?.addSource(track.accessList.accessToTrack.slug, {
                 type: 'geojson',
@@ -163,8 +167,46 @@ export default function MapWrapper({
                     router.push(`/main/${track.accessList.accessToTrack.slug}`);
                 },
             );
+        },
+        [dataToShow, diffLayers, router],
+    );
+
+    // Effect to add the uploaded track as a new layer to the map
+    useEffect(() => {
+        if (mapStyleLoaded && justUploaded) {
+            const diff = allTrackData.filter(
+                (layer) =>
+                    !currentLayers
+                        .map((l) => l.accessList.accessToTrack.slug)
+                        .includes(layer.accessList.accessToTrack.slug),
+            );
+            if (diff.length !== 0) {
+                // Call addLayer to add the newly uploaded track to the map
+                addLayer(diff[0]);
+                // Update the local state for all map layers
+                setCurrentLayers([...currentLayers, diff[0]]);
+                // Reset the justUploaded state to false
+                setJustUploadedFalse();
+            }
+        }
+    }, [
+        allTrackData,
+        mapStyleLoaded,
+        currentLayers,
+        addLayer,
+        justUploaded,
+        setJustUploadedFalse,
+    ]);
+
+    // Function to add all track data the user has access to as map layers
+    // When user is viewing my tracks on first render, all layers of shared tracks will be hidden
+    const addLayersAllTrackData = useCallback(() => {
+        allTrackData.forEach((track) => {
+            addLayer(track);
         });
-    }, [allTrackData, router, diffLayers, dataToShow]);
+        // Store the state of all layers
+        setCurrentLayers(allTrackData);
+    }, [allTrackData, addLayer]);
 
     // Function to show all different layers between 'my tracks' and 'all tracks'
     const showAllDiffLayers = useCallback(() => {

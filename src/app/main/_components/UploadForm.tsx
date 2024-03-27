@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { getSlug } from '@/lib/helper';
 import { TrackReqParam } from '@/lib/type';
 import { redirect, useRouter } from 'next/navigation';
+import { useTrackStore } from '@/providers/TrackStoreProvider';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
@@ -32,6 +33,8 @@ export default function UploadForm() {
         fileReader.current.onloadend = handleFileRead;
         fileReader.current.readAsText(file);
     };
+
+    const { setJustUploadedTrue } = useTrackStore((state) => state);
 
     return (
         <>
@@ -75,6 +78,7 @@ export default function UploadForm() {
                         startTransition(() => {
                             router.refresh();
                         });
+                        setJustUploadedTrue();
                     }
                 }}
                 className='flex flex-col gap-3'
