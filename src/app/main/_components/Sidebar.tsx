@@ -1,19 +1,10 @@
-import { Bell, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
-import { Upload } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import UploadForm from './UploadForm';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Track } from '@/lib/type';
 import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';
@@ -21,6 +12,8 @@ import BottomBar from './Bottombar';
 import FriendsDialog from './FriendsDialog';
 import NotificationsDialog from './NotificationsDialog';
 import { db } from '@/db';
+import TrackDataSwitcher from './TrackDataSwitcher';
+import UploadDialog from './UploadDialog';
 
 export default async function Sidebar({
     myTrackData,
@@ -49,7 +42,7 @@ export default async function Sidebar({
     });
 
     return (
-        <div className='flex min-h-screen w-screen flex-col sm:w-[430px]'>
+        <div className='flex max-h-screen min-h-screen w-screen flex-col sm:w-[430px]'>
             <div className='mx-2 flex h-[60px] max-w-full items-center justify-between'>
                 <Button variant='outline' size='icon'>
                     <Link href='/'>
@@ -68,30 +61,11 @@ export default async function Sidebar({
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
                 <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 shadow-sm dark:border-slate-300'>
-                    <TabsList className='gap-1'>
-                        <TabsTrigger value='my'>My tracks</TabsTrigger>
-                        <TabsTrigger value='all'>All tracks</TabsTrigger>
-                    </TabsList>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant='outline'
-                                className='flex items-center gap-1'
-                            >
-                                <Upload width={15} height={15} />
-                                Upload
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Upload your gpx file</DialogTitle>
-                            </DialogHeader>
-                            <UploadForm />
-                        </DialogContent>
-                    </Dialog>
+                    <TrackDataSwitcher />
+                    <UploadDialog />
                 </div>
 
-                <div className='max-w-full flex-1'>
+                <div className='max-h-[62vh] max-w-full flex-1 overflow-y-scroll'>
                     <TabsContent value='my' className='flex flex-col px-2'>
                         {myTrackData.length === 0 ? (
                             <div className='flex h-full w-full items-center justify-center'>

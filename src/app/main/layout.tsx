@@ -18,10 +18,33 @@ export default async function MainScreenLayout({
         where: (track, { eq }) => eq(track.userId, user.id),
     });
 
+    const allTrackData = await db.query.access.findMany({
+        where: (access, { eq }) => eq(access.userId, user.id),
+        columns: {
+            id: true,
+        },
+        with: {
+            accessList: {
+                columns: {},
+                with: {
+                    accessToTrack: {
+                        with: {
+                            owner: {
+                                columns: {
+                                    username: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
     return (
         <div className='flex min-h-screen w-screen'>
             {children}
-            <MapWrapper myTrackData={myTrackData} />
+            <MapWrapper myTrackData={myTrackData} allTrackData={allTrackData} />
         </div>
     );
 }

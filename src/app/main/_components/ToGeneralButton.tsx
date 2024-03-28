@@ -1,13 +1,19 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { useTrackStore } from '@/providers/TrackStoreProvider';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function ToGeneralButton() {
     const router = useRouter();
 
-    const handleClick = () => router.back();
+    const { setTrackToView } = useTrackStore((state) => state);
+
+    const handleClick = () => {
+        setTrackToView('');
+        router.back();
+    };
 
     return (
         <Button
