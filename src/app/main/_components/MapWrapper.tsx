@@ -20,7 +20,7 @@ export default function MapWrapper({
     // Local states for the map
     const [lng, setLng] = useState<number>(7.161);
     const [lat, setLat] = useState<number>(47.319);
-    const [zoom, setZoom] = useState<number>(6);
+    const [zoom, setZoom] = useState<number>(5);
     const [currentLayers, setCurrentLayers] = useState<SharedTrack[]>([]);
 
     // State indicating whether the map has loaded the corresponding style
@@ -36,9 +36,14 @@ export default function MapWrapper({
     // Retrieve states and actions from Zustand store, including
     // 1. State of data to show on the map, either "my tracks" or "all tracks"
     // 2. State of whether a new track has just been successfully uploaded
-    const { dataToShow, justUploaded, setJustUploadedFalse } = useTrackStore(
-        (state) => state,
-    );
+    // 3. State of the track to be viewed in detail (zoom in) mode
+    const {
+        dataToShow,
+        justUploaded,
+        setJustUploadedFalse,
+        trackToView,
+        setTrackToView,
+    } = useTrackStore((state) => state);
     // Retrieve the current state of the app theme
     const { theme } = useTheme();
 
@@ -50,6 +55,35 @@ export default function MapWrapper({
             .filter((slug) => !myTrackSlugs.includes(slug));
         return new Set(diffSlugs);
     }, [myTrackData, allTrackData]);
+
+    // Effect to synchronize store state to zoomIn and zoomOut
+    useEffect(() => {
+        if (map.current && trackToView !== '') {
+            const target = allTrackData.find(
+                (t) => t.accessList.accessToTrack.slug === trackToView,
+            );
+            if (target) {
+                const geoJson = JSON.parse(
+                    target.accessList.accessToTrack.path,
+                );
+                const coords = geoJson.features[0].geometry.coordinates;
+                const bounds = coords.reduce(
+                    (b: any, coord: any) => {
+                        return b.extend(coord);
+                    },
+                    new mapboxgl.LngLatBounds(coords[0], coords[0]),
+                );
+                map.current?.fitBounds(bounds, {
+                    padding: 20,
+                });
+            }
+        } else if (map.current && trackToView === '') {
+            map.current.flyTo({
+                center: [lng, lat],
+                zoom: zoom,
+            });
+        }
+    }, [trackToView, allTrackData, lat, lng, zoom]);
 
     // Function to add a single layer to the map
     const addLayer = useCallback(
@@ -155,21 +189,13 @@ export default function MapWrapper({
                 'click',
                 `${track.accessList.accessToTrack.slug}-fill`,
                 () => {
-                    const coords = geoJson.features[0].geometry.coordinates;
-                    const bounds = coords.reduce(
-                        (b: any, coord: any) => {
-                            return b.extend(coord);
-                        },
-                        new mapboxgl.LngLatBounds(coords[0], coords[0]),
-                    );
-                    map.current?.fitBounds(bounds, {
-                        padding: 20,
-                    });
+                    // Set state to be name of the track to be viewed in detail
+                    setTrackToView(track.accessList.accessToTrack.slug);
                     router.push(`/main/${track.accessList.accessToTrack.slug}`);
                 },
             );
         },
-        [dataToShow, diffLayers, router],
+        [dataToShow, diffLayers, router, setTrackToView],
     );
 
     // Effect to add the uploaded track as a new layer to the map

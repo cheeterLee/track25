@@ -18,6 +18,7 @@ export default function UploadForm() {
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const router = useRouter();
     const { setFileUploadDialogOpen } = useDialogStore((state) => state);
+    const { setTrackToView } = useTrackStore((state) => state);
 
     let fileReader = useRef<FileReader | null>(null);
 
@@ -73,6 +74,14 @@ export default function UploadForm() {
                         },
                     );
 
+                    if (!response.ok) {
+                        toast({
+                            variant: 'destructive',
+                            title: 'Error in uploading the file',
+                        });
+                        return;
+                    }
+
                     const newBlob = (await response.json()) as PutBlobResult;
 
                     const slug = getSlug(newBlob.pathname);
@@ -96,11 +105,13 @@ export default function UploadForm() {
                         });
 
                         startTransition(() => {
+                            router.push(`/main/${slug}`);
                             router.refresh();
                         });
 
                         setFileUploadDialogOpen();
                         setJustUploadedTrue();
+                        setTrackToView(slug);
                     } else {
                         toast({
                             variant: 'destructive',
