@@ -4,15 +4,17 @@ import type { PutBlobResult } from '@vercel/blob';
 import { useState, useRef, startTransition } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { getSlug } from '@/lib/helper';
+import { getSlug, isGpxFile } from '@/lib/helper';
 import { TrackReqParam } from '@/lib/type';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTrackStore } from '@/providers/TrackStoreProvider';
+import { toast } from '@/components/ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
-    const [blob, setBlob] = useState<PutBlobResult | null>(null);
     const [fileStr, setFileStr] = useState<string>('');
+    const [isUploading, setIsUploading] = useState<boolean>(false);
     const router = useRouter();
 
     let fileReader = useRef<FileReader | null>(null);
@@ -46,7 +48,20 @@ export default function UploadForm() {
                         throw new Error('No file selected');
                     }
 
+                    setIsUploading(true);
+
                     const file = inputFileRef.current.files[0];
+
+                    const isFileValid = isGpxFile(file.name);
+                    if (!isFileValid) {
+                        toast({
+                            variant: 'destructive',
+                            title: 'Invalid File Type',
+                            description: 'Only support gpx files.',
+                            duration: 2000,
+                        });
+                        return;
+                    }
 
                     const response = await fetch(
                         `/api/file/upload?filename=${file.name}`,
@@ -57,8 +72,6 @@ export default function UploadForm() {
                     );
 
                     const newBlob = (await response.json()) as PutBlobResult;
-
-                    setBlob(newBlob);
 
                     const slug = getSlug(newBlob.pathname);
 
@@ -75,11 +88,24 @@ export default function UploadForm() {
 
                     const data: { code: number } = await res.json();
                     if (data.code === 200) {
+                        toast({
+                            title: 'Successfully uploaded!',
+                            duration: 2000,
+                        });
+
                         startTransition(() => {
                             router.refresh();
                         });
+
                         setJustUploadedTrue();
+                    } else {
+                        toast({
+                            variant: 'destructive',
+                            title: 'Something went wrong',
+                            duration: 2000,
+                        });
                     }
+                    setIsUploading(false);
                 }}
                 className='flex flex-col gap-3'
             >
@@ -91,16 +117,18 @@ export default function UploadForm() {
                     required
                 />
                 <div className='flex w-full justify-end'>
-                    <Button variant='secondary' type='submit'>
+                    <Button
+                        disabled={isUploading}
+                        variant='secondary'
+                        type='submit'
+                    >
+                        {isUploading && (
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        )}
                         Upload
                     </Button>
                 </div>
             </form>
-            {blob && (
-                <div>
-                    Blob url: <a href={blob.url}>{blob.url}</a>
-                </div>
-            )}
         </>
     );
 }

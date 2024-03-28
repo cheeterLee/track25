@@ -15,3 +15,8 @@ export function getPremiumType(plan: Stripe.Plan) {
         return 'free';
     }
 }
+
+export function isGpxFile(fileName: string) {
+    const fileExtension = fileName.split('.').pop()?.toLowerCase();
+    return fileExtension === 'gpx';
+}
