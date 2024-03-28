@@ -5,6 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { TrackStoreProvider } from '@/providers/TrackStoreProvider';
 import { Toaster } from '@/components/ui/toaster';
+import { DialogStoreProvider } from '@/providers/DialogStateProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,15 +23,17 @@ export default function RootLayout({
         <html lang='en'>
             <body className={inter.className}>
                 <TrackStoreProvider>
-                    <ThemeProvider
-                        attribute='class'
-                        defaultTheme='system'
-                        enableSystem
-                        disableTransitionOnChange
-                    >
-                        {children}
-                        <Toaster />
-                    </ThemeProvider>
+                    <DialogStoreProvider>
+                        <ThemeProvider
+                            attribute='class'
+                            defaultTheme='system'
+                            enableSystem
+                            disableTransitionOnChange
+                        >
+                            {children}
+                            <Toaster />
+                        </ThemeProvider>
+                    </DialogStoreProvider>
                 </TrackStoreProvider>
             </body>
         </html>

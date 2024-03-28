@@ -10,12 +10,14 @@ import { useRouter } from 'next/navigation';
 import { useTrackStore } from '@/providers/TrackStoreProvider';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useDialogStore } from '@/providers/DialogStateProvider';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [fileStr, setFileStr] = useState<string>('');
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const router = useRouter();
+    const { setFileUploadDialogOpen } = useDialogStore((state) => state);
 
     let fileReader = useRef<FileReader | null>(null);
 
@@ -97,6 +99,7 @@ export default function UploadForm() {
                             router.refresh();
                         });
 
+                        setFileUploadDialogOpen();
                         setJustUploadedTrue();
                     } else {
                         toast({

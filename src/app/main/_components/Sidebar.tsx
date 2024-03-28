@@ -22,6 +22,7 @@ import FriendsDialog from './FriendsDialog';
 import NotificationsDialog from './NotificationsDialog';
 import { db } from '@/db';
 import TrackDataSwitcher from './TrackDataSwitcher';
+import UploadDialog from './UploadDialog';
 
 export default async function Sidebar({
     myTrackData,
@@ -69,28 +70,8 @@ export default async function Sidebar({
 
             <Tabs defaultValue='my' className='flex max-w-full flex-1 flex-col'>
                 <div className='flex max-h-[80px] max-w-full items-center justify-between border-b-[1px] border-slate-400 px-2 pb-1 shadow-sm dark:border-slate-300'>
-                    {/* <TabsList className='gap-1'>
-                        <TabsTrigger value='my'>My tracks</TabsTrigger>
-                        <TabsTrigger value='all'>All tracks</TabsTrigger>
-                    </TabsList> */}
                     <TrackDataSwitcher />
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant='outline'
-                                className='flex items-center gap-1'
-                            >
-                                <Upload width={15} height={15} />
-                                Upload
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Upload your gpx file</DialogTitle>
-                            </DialogHeader>
-                            <UploadForm />
-                        </DialogContent>
-                    </Dialog>
+                    <UploadDialog />
                 </div>
 
                 <div className='max-h-[62vh] max-w-full flex-1 overflow-y-scroll'>
