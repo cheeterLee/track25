@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useTrackStore } from '@/providers/TrackStoreProvider';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
-import { useDialogStore } from '@/providers/DialogStateProvider';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 export default function UploadForm() {
     const inputFileRef = useRef<HTMLInputElement>(null);

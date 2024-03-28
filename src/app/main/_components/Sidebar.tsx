@@ -1,19 +1,10 @@
-import { Bell, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 import LogoWrapper from '@/components/LogoWrapper';
-import { Upload } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import UploadForm from './UploadForm';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Track } from '@/lib/type';
 import { User } from 'lucia';
 import ToDetailButton from './ToDetailButton';

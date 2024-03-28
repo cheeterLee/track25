@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { TrackStoreProvider } from '@/providers/TrackStoreProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { DialogStoreProvider } from '@/providers/DialogStateProvider';
+import { DialogStoreProvider } from '@/providers/DialogStoreProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 

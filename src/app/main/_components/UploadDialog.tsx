@@ -10,7 +10,7 @@ import {
 import UploadForm from './UploadForm';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
-import { useDialogStore } from '@/providers/DialogStateProvider';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 export default function UploadDialog() {
     const { fileUploadDialogOpen, setFileUploadDialogOpen } = useDialogStore(
