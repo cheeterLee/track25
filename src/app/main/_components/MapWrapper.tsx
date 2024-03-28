@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { useTrackStore } from '@/providers/TrackStoreProvider';
+import { generateRandomColor } from '@/lib/utils';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_KEY ?? '';
 
@@ -68,7 +69,7 @@ export default function MapWrapper({
                     'line-cap': 'round',
                 },
                 paint: {
-                    'line-color': 'red',
+                    'line-color': generateRandomColor(),
                     'line-width': 6,
                 },
             });
