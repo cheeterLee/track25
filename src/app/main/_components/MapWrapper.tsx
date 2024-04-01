@@ -290,6 +290,16 @@ export default function MapWrapper({
             setMapStyleLoaded(true);
             addLayersAllTrackData();
         });
+
+        // Add control widgets to the map
+        map.current.addControl(
+            new mapboxgl.NavigationControl({ showCompass: false }),
+        );
+        map.current.addControl(
+            new mapboxgl.FullscreenControl({
+                container: document.querySelector('body'),
+            }),
+        );
     }, [lng, lat, zoom, theme, addLayersAllTrackData]);
 
     // Effect to show and hide the map layers when user switch between 'my tracks' and 'all tracks'
