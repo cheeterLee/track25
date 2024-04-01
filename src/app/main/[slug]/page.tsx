@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { Download, Share } from 'lucide-react';
+import { Share } from 'lucide-react';
 import ToGeneralButton from '../_components/ToGeneralButton';
-import Link from 'next/link';
 import { db } from '@/db';
 import { Track } from '@/lib/type';
 import { Card } from '@/components/ui/card';
@@ -131,13 +130,6 @@ export default async function TrackDetail({
                         </DialogContent>
                     </Dialog>
                     <DownloadButton track={track} />
-                    {/* <Button
-                        variant='secondary'
-                        className='flex items-center gap-1'
-                    >
-                        <Download width={15} height={15} />
-                        <Link href={track?.downloadUrl ?? ''}>Download</Link>
-                    </Button> */}
                 </div>
             </div>
             <div className='flex h-[200px] w-full flex-col items-center justify-center gap-1'>
