@@ -126,10 +126,13 @@ export async function validateSubscription(userId: string) {
     }
     const sub = await stripe.subscriptions.retrieve(subId);
     if (sub.status !== 'active') {
-        await db.update(user).set({
-            isPremium: false,
-            tariff: 'free',
-        });
+        await db
+            .update(user)
+            .set({
+                isPremium: false,
+                tariff: 'free',
+            })
+            .where(eq(user.id, userId));
         return { isPremium: false, tariff: 'free', error: null };
     } else {
         return { isPremium: true, tariff: _user.tariff, error: null };

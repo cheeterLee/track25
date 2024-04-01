@@ -6,7 +6,7 @@ import toGeoJson from '@mapbox/togeojson';
 import { Track, TrackReqParam } from '@/lib/type';
 // @ts-ignore
 import length from '@turf/length';
-import { access, accessList, track } from '@/db/schema';
+import { access, accessList, track, upload } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
 // import { revalidatePath } from 'next/cache';
 
@@ -65,6 +65,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     await db.insert(access).values({
         accessListId: accessListId,
         userId: user.id,
+    });
+
+    await db.insert(upload).values({
+        userId: user.id,
+        trackId: trackId,
     });
 
     return NextResponse.json({ code: 200 });
