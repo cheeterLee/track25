@@ -27,6 +27,32 @@ export const invitationStatusEnum = pgEnum('invitation_status', [
     'rejected',
 ]);
 
+export const download = pgTable('download', {
+    id: uuid('id').defaultRandom().notNull(),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    trackId: uuid('track_id')
+        .notNull()
+        .references(() => track.id),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const upload = pgTable('upload', {
+    id: uuid('id').defaultRandom().notNull(),
+    userId: varchar('user_id', {
+        length: 255,
+    })
+        .notNull()
+        .references(() => user.id),
+    trackId: uuid('track_id')
+        .notNull()
+        .references(() => track.id),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
 export const user = pgTable('user', {
     id: varchar('id', {
         length: 255,

@@ -12,7 +12,7 @@ export default function ToGeneralButton() {
 
     const handleClick = () => {
         setTrackToView('');
-        router.back();
+        router.push('/main');
     };
 
     return (

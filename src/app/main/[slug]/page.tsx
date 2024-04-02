@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Download, Share } from 'lucide-react';
+import { Share } from 'lucide-react';
 import ToGeneralButton from '../_components/ToGeneralButton';
-import Link from 'next/link';
 import { db } from '@/db';
 import { Track } from '@/lib/type';
 import { Card } from '@/components/ui/card';
@@ -18,6 +17,8 @@ import ShareFriendsForm from './_components/ShareFriendsForm';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import RemoveAccessButton from './_components/RemoveAccessButton';
 import ShareGroupsForm from './_components/ShareGroupsForm';
+import TrackChart from './_components/TrackChart';
+import DownloadButton from './_components/DownloadButton';
 
 export default async function TrackDetail({
     params,
@@ -128,13 +129,7 @@ export default async function TrackDetail({
                             </Tabs>
                         </DialogContent>
                     </Dialog>
-                    <Button
-                        variant='secondary'
-                        className='flex items-center gap-1'
-                    >
-                        <Download width={15} height={15} />
-                        <Link href={track?.downloadUrl ?? ''}>Download</Link>
-                    </Button>
+                    <DownloadButton track={track} />
                 </div>
             </div>
             <div className='flex h-[200px] w-full flex-col items-center justify-center gap-1'>
@@ -195,15 +190,19 @@ export default async function TrackDetail({
                     </Dialog>
                 </div>
             </div>
+            <TrackChart track={track} />
             <div className='grid w-full grid-cols-2 gap-1 px-2'>
                 <Card className='flex h-[110px] flex-col items-center justify-center'>
                     <div>Distance</div>
-                    <div>{track?.distance ?? 0}</div>
+                    <div>{track?.distance ?? 0} km</div>
                 </Card>
                 <Card className='flex h-[110px] flex-col items-center justify-center'>
                     <div>Elevation</div>
-                    <div>{track?.elevation ?? 0}</div>
+                    <div>{track?.elevation ?? 0} ft</div>
                 </Card>
+            </div>
+            <div className='mt-10 w-full text-center text-xs tracking-wide'>
+                Total Downloads: {track?.downloadTimes ?? 0}
             </div>
         </div>
     );

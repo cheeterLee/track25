@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import AuthForm from './AuthForm';
 import { logout } from '@/lib/authActions';
 import { validateRequest } from '@/lib/auth';
-import { User, Menu } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import {
     Drawer,
     DrawerClose,
@@ -15,13 +15,18 @@ import {
 } from '@/components/ui/drawer';
 import AuthModal from './AuthModal';
 import Link from 'next/link';
+import NavMenu from '@/app/home/_components/NavMenu';
+import { Separator } from './ui/separator';
 
 export default async function Navbar() {
     const { user } = await validateRequest();
 
     return (
-        <div className='flex h-[100px] w-full items-center justify-between border-b-[1px] border-slate-400 px-1 shadow-sm dark:border-slate-300 md:px-6 lg:px-40'>
-            <LogoWrapper width={300} height={200} />
+        <div className='flex h-[100px] w-full items-center justify-between border-b-[1px] border-slate-400 px-1 shadow-sm dark:border-slate-300 md:px-6 lg:px-20'>
+            <div className='flex items-center'>
+                <LogoWrapper width={300} height={200} />
+                <NavMenu />
+            </div>
             <Drawer>
                 <DrawerTrigger>
                     <Button
@@ -36,36 +41,59 @@ export default async function Navbar() {
                 </DrawerTrigger>
                 <DrawerContent className='h-[80vh]'>
                     <DrawerHeader>
-                        <DrawerTitle>Menu</DrawerTitle>
+                        <DrawerTitle className='text-lg'>Menu</DrawerTitle>
                     </DrawerHeader>
-                    {!user ? (
-                        <div className='flex items-center justify-center'>
-                            <AuthModal />
-                        </div>
-                    ) : (
-                        <div className='flex flex-col items-center gap-10'>
-                            <div className='flex items-center gap-3'>
-                                <User />
-                                <span className='text-md'>{user.username}</span>
-                            </div>
-                            <Button variant='outline'>
-                                <Link href='/main'>Main App</Link>
+                    <Separator />
+                    <div className='flex h-full w-full flex-col justify-between'>
+                        <div className='flex w-full flex-col'>
+                            <Button variant='link' size='lg'>
+                                <Link href='/home' className='text-lg'>
+                                    Home
+                                </Link>
                             </Button>
-                            <DrawerClose>
-                                <AuthForm action={logout}>
-                                    <Button variant='outline'>Logout</Button>
-                                </AuthForm>
-                            </DrawerClose>
+                            <Separator />
+                            <Button variant='link' size='lg'>
+                                <Link href='/home/about' className='text-lg'>
+                                    About
+                                </Link>
+                            </Button>
+                            <Separator />
+                            <Button variant='link' size='lg'>
+                                <Link href='/home/pricing' className='text-lg'>
+                                    Pricing
+                                </Link>
+                            </Button>
+                            <Separator />
+                            <Button variant='link' size='lg'>
+                                <Link href='/home/showcase' className='text-lg'>
+                                    Showcase
+                                </Link>
+                            </Button>
+                            <Separator />
                         </div>
-                    )}
-                    <div className='mt-10 flex flex-col justify-center gap-10'>
-                        <div className='flex h-full w-full items-center justify-center gap-3'>
-                            <span>theme: </span>
+                        <div className='mb-20 flex items-center justify-center gap-2'>
+                            {!user ? (
+                                <AuthModal />
+                            ) : (
+                                <div className='flex items-center gap-2'>
+                                    <div className='flex items-center'>
+                                        <User />
+                                        <span>{user.username}</span>
+                                    </div>
+                                    <DrawerClose>
+                                        <AuthForm action={logout}>
+                                            <Button variant='outline'>
+                                                Logout
+                                            </Button>
+                                        </AuthForm>
+                                    </DrawerClose>
+                                    <Button>
+                                        <Link href='/main'>Main App</Link>
+                                    </Button>
+                                </div>
+                            )}
                             <ThemeToggle />
                         </div>
-                        <DrawerClose>
-                            <Button className='mt-60'>close</Button>
-                        </DrawerClose>
                     </div>
                 </DrawerContent>
             </Drawer>
@@ -79,12 +107,12 @@ export default async function Navbar() {
                             <User />
                             <span className='text-sm'>{user.username}</span>
                         </div>
-                        <Button variant='outline'>
-                            <Link href='/main'>Main App</Link>
-                        </Button>
                         <AuthForm action={logout}>
                             <Button variant='outline'>Logout</Button>
                         </AuthForm>
+                        <Button variant='default'>
+                            <Link href='/main'>Main App</Link>
+                        </Button>
                     </div>
                 )}
                 <ThemeToggle />
