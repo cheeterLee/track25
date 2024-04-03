@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HomePage() {
     return (
@@ -21,7 +22,7 @@ export default function HomePage() {
                     variant='outline'
                     className='w-[10rem] border-slate-600 bg-transparent font-semibold text-slate-200'
                 >
-                    View use cases
+                    <Link href='/home/showcase'>View use cases</Link>
                 </Button>
             </div>
             <div className='z-[3] mb-10 hidden flex-col items-end md:block md:flex md:flex-row'>
