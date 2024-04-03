@@ -45,7 +45,7 @@ export default function SettingsForm({ user }: { user: User }) {
             startTransition(() => {
                 router.refresh();
             });
-            setInEditMode(false)
+            setInEditMode(false);
         } else {
             if (error !== null) {
                 toast({

@@ -83,7 +83,7 @@ export default async function BottomBar({ user: authUser }: { user: User }) {
                             value='profile'
                             className='flex w-full flex-col justify-between gap-6'
                         >
-                            <SettingsForm user={authUser} />    
+                            <SettingsForm user={authUser} />
                             <div className='flex justify-end'>
                                 <Button variant='destructive'>
                                     <AuthForm action={logout}>

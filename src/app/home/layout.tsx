@@ -6,7 +6,7 @@ export default function HomePageLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className='flex min-h-screen w-screen flex-col'>
+        <div className='relative flex min-h-screen w-screen flex-col'>
             <Navbar />
             {children}
         </div>
