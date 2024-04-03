@@ -18,6 +18,7 @@ import { validateSubscription } from '@/lib/paymentActions';
 import UnsubscribeButton from './UnsubscribeButton';
 import { logout } from '@/lib/authActions';
 import AuthForm from '@/components/AuthForm';
+import SettingsForm from './SettingsForm';
 
 const plans: Plan[] = [
     {
@@ -82,7 +83,7 @@ export default async function BottomBar({ user: authUser }: { user: User }) {
                             value='profile'
                             className='flex w-full flex-col justify-between gap-6'
                         >
-                            <div className='min-h-[250px] border-2 border-pink-200'></div>
+                            <SettingsForm user={authUser} />
                             <div className='flex justify-end'>
                                 <Button variant='destructive'>
                                     <AuthForm action={logout}>
