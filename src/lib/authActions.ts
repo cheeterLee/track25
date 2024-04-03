@@ -92,7 +92,7 @@ export async function logout(): Promise<ActionResult> {
         sessionCookie.attributes,
     );
 
-    return redirect('/');
+    return redirect('/home');
 }
 
 export async function login(_: any, formData: FormData): Promise<ActionResult> {
