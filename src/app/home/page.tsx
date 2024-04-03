@@ -38,7 +38,7 @@ export default function HomePage() {
                 </div>
             </div>
             <div className='z-[3] mb-10 mt-10 text-slate-200'>
-                <Separator />
+                <Separator className='bg-slate-200' />
                 <p>2024&copy; track25</p>
             </div>
         </div>

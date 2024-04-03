@@ -30,10 +30,10 @@ export default function PricingPage() {
             <div className='absolute bottom-0 left-0 right-0 top-[100px] z-[2] bg-black/70' />
             <div className='z-[3] mt-20 flex w-full flex-col items-center gap-3 px-8 text-slate-200'>
                 <div className='flex w-full flex-col items-center'>
-                    <h3 className='text-2xl font-bold tracking-wide'>
+                    <h3 className='mb-1 text-2xl font-bold tracking-wide'>
                         Pricing
                     </h3>
-                    <Separator className='z-[3]' />
+                    <Separator className='z-[3] bg-slate-200' />
                 </div>
                 <div className='flex flex-col items-start gap-1'>
                     <p className='text-lg'>
@@ -49,7 +49,7 @@ export default function PricingPage() {
                     {plans.map((plan) => (
                         <Card
                             key={plan.id}
-                            className='flex h-[250px] flex-col items-center justify-center bg-transparent text-slate-200'
+                            className='flex h-[250px] flex-col items-center justify-center border-slate-200 bg-transparent text-slate-200'
                         >
                             <div className='flex flex-col items-center justify-center gap-1'>
                                 <div className='text-2xl'>{plan.name}</div>
@@ -62,7 +62,7 @@ export default function PricingPage() {
                 </div>
             </div>
             <div className='z-[3] mb-10 mt-10 text-slate-200'>
-                <Separator />
+                <Separator className='bg-slate-200' />
                 <p>2024&copy; track25</p>
             </div>
         </div>

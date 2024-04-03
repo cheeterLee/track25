@@ -22,7 +22,7 @@ export default async function Navbar() {
     const { user } = await validateRequest();
 
     return (
-        <div className='sticky top-0 z-[100] flex h-[100px] w-full items-center justify-between border-b-[1px] border-slate-400 px-1 shadow-sm dark:border-slate-500 md:px-6 lg:px-20'>
+        <div className='sticky top-0 flex h-[100px] w-full items-center justify-between border-b-[1px] border-slate-400 px-1 shadow-sm dark:border-slate-500 md:px-6 lg:px-20'>
             <div className='flex items-center'>
                 <LogoWrapper width={300} height={200} />
                 <NavMenu />
