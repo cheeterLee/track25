@@ -73,6 +73,7 @@ export default function RegisterForm() {
                 description: 'You will be redirected to the app page',
                 duration: 2000,
             });
+            form.reset();
             router.push('/main');
         } else {
             toast({

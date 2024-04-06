@@ -59,13 +59,14 @@ export default function LoginForm() {
                 description: 'You will be redirected to the app page',
                 duration: 2000,
             });
+            form.reset();
             router.push('/main');
         } else {
             toast({
                 variant: 'destructive',
                 title: 'Error when trying to login',
                 description: message,
-                duration: 2000,
+                duration: 3000,
             });
         }
         setIsLoading(false);
