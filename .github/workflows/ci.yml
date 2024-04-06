@@ -1,4 +1,4 @@
-name: Linting
+name: Linting and Tests
 
 on:
     push:
@@ -25,3 +25,6 @@ jobs:
 
             - name: Run Lint
               run: pnpm lint
+            
+            - name: Run Unit Tests
+              run: pnpm test
