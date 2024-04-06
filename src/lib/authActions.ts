@@ -15,27 +15,10 @@ interface ActionResult {
 }
 
 export async function signup(
-    _: any,
-    formData: FormData,
+    username: string,
+    password: string,
+    confirmPassword: string,
 ): Promise<ActionResult> {
-    const schema = z.object({
-        username: z.string().min(2),
-        password: z.string().min(6),
-        confirmPassword: z.string().min(6),
-    });
-
-    const parse = schema.safeParse({
-        username: formData.get('username'),
-        password: formData.get('password'),
-        confirmPassword: formData.get('confirmPassword'),
-    });
-
-    if (!parse.success) {
-        return { message: 'error in form fields', success: false };
-    }
-
-    const { username, password, confirmPassword } = parse.data;
-
     if (username.length < 2) {
         return {
             message: 'username must be 2 characters long',
@@ -48,6 +31,14 @@ export async function signup(
             message: 'password must equal to confirm password',
             success: false,
         };
+    }
+
+    const existedUser = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.username, String(username)),
+    });
+
+    if (existedUser) {
+        return { success: false, message: 'Duplicate username.' };
     }
 
     const hashedPassword = await new Argon2id().hash(password);
@@ -72,7 +63,7 @@ export async function signup(
         sessionCookie.attributes,
     );
 
-    return redirect('/main');
+    return { success: true, message: '' };
 }
 
 export async function logout(): Promise<ActionResult> {
@@ -95,10 +86,10 @@ export async function logout(): Promise<ActionResult> {
     return redirect('/home');
 }
 
-export async function login(_: any, formData: FormData): Promise<ActionResult> {
-    const username = formData.get('username');
-    const password = formData.get('password')!;
-
+export async function login(
+    username: string,
+    password: string,
+): Promise<ActionResult> {
     if (!username) {
         return { message: 'null user', success: false };
     }
@@ -135,5 +126,5 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
         sessionCookie.attributes,
     );
 
-    return redirect('/main');
+    return { success: true, message: '' };
 }
