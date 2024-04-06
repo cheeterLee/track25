@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -8,10 +10,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 export default function AuthModal() {
+    const { authModalOpen, setAuthModalOpen } = useDialogStore(
+        (state) => state,
+    );
+
     return (
-        <Dialog>
+        <Dialog open={authModalOpen} onOpenChange={setAuthModalOpen}>
             <DialogTrigger asChild>
                 <Button>Login/Signup</Button>
             </DialogTrigger>

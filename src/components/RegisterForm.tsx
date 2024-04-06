@@ -26,6 +26,7 @@ import { toast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 const FormSchema = z
     .object({
@@ -50,6 +51,7 @@ const FormSchema = z
 export default function RegisterForm() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { setAuthModalOpen } = useDialogStore((state) => state);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -70,10 +72,11 @@ export default function RegisterForm() {
         if (success) {
             toast({
                 title: 'Successfully Registered',
-                description: 'You will be redirected to the app page',
-                duration: 2000,
+                description: 'You will be shortly redirected to the app page',
+                duration: 3000,
             });
             form.reset();
+            setAuthModalOpen();
             router.push('/main');
         } else {
             toast({
