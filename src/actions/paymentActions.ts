@@ -1,9 +1,9 @@
 'use server';
 
 import Stripe from 'stripe';
-import { validateRequest } from './auth';
+import { validateRequest } from '../lib/auth';
 import { db } from '@/db';
-import { getPremiumType } from './helper';
+import { getPremiumType } from '../lib/helper';
 import { friendList, subscription, user } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { format } from 'date-fns';

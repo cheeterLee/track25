@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { quitGroup } from '@/lib/friendActions';
+import { quitGroup } from '@/actions/friendActions';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 

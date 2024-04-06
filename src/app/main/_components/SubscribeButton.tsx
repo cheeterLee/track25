@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { createStripeCheckoutSession } from '@/lib/paymentActions';
+import { createStripeCheckoutSession } from '@/actions/paymentActions';
 import { Plan } from '@/lib/type';
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(

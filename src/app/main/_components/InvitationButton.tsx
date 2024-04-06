@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { createInvitation } from '@/lib/friendActions';
+import { createInvitation } from '@/actions/friendActions';
 
 export default function InvitationButton({
     type,

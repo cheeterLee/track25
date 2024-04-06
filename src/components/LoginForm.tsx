@@ -22,7 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
-import { login } from '@/lib/authActions';
+import { login } from '@/actions/authActions';
 import { toast } from './ui/use-toast';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';

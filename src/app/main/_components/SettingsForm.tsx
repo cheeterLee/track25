@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { User } from 'lucia';
 import { Button } from '@/components/ui/button';
 import { startTransition, useState } from 'react';
-import { changeUsername } from '@/lib/settingsActions';
+import { changeUsername } from '@/actions/settingsActions';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/use-toast';
 

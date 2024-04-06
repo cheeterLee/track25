@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { createGroup } from '@/lib/friendActions';
+import { createGroup } from '@/actions/friendActions';
 import { User } from '@/lib/type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';

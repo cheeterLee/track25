@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { cancelSubscription } from '@/lib/paymentActions';
+import { cancelSubscription } from '@/actions/paymentActions';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 

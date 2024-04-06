@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { addDownloadLog } from '@/lib/logActions';
+import { addDownloadLog } from '@/actions/logActions';
 import { Track } from '@/lib/type';
 import { Download } from 'lucide-react';
 import Link from 'next/link';

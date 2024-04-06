@@ -21,7 +21,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
-import { signup } from '@/lib/authActions';
+import { signup } from '@/actions/authActions';
 import { toast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
