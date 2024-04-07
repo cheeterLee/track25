@@ -2,7 +2,7 @@
 
 import LogoWrapper from '@/components/LogoWrapper';
 import { Button } from '@/components/ui/button';
-import { retrieveCheckoutSession } from '@/lib/paymentActions';
+import { retrieveCheckoutSession } from '@/actions/paymentActions';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';

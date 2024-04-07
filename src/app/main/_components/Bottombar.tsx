@@ -14,9 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User } from 'lucia';
 import SubscribeButton from './SubscribeButton';
 import { Plan } from '@/lib/type';
-import { validateSubscription } from '@/lib/paymentActions';
+import { validateSubscription } from '@/actions/paymentActions';
 import UnsubscribeButton from './UnsubscribeButton';
-import { logout } from '@/lib/authActions';
+import { logout } from '@/actions/authActions';
 import AuthForm from '@/components/AuthForm';
 import SettingsForm from './SettingsForm';
 

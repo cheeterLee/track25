@@ -19,7 +19,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { searchUser } from '@/lib/friendActions';
+import { searchUser } from '@/actions/friendActions';
 
 const FormSchema = z.object({
     searchText: z.string(),

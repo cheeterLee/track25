@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { removeUserAccess } from '@/lib/trackAccessActions';
+import { removeUserAccess } from '@/actions/trackAccessActions';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 

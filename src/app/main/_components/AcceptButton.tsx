@@ -5,7 +5,7 @@ import { toast } from '@/components/ui/use-toast';
 import {
     acceptFriendRequest,
     acceptGroupInvitation,
-} from '@/lib/friendActions';
+} from '@/actions/friendActions';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 

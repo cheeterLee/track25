@@ -22,10 +22,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
-import { login } from '@/lib/authActions';
+import { login } from '@/actions/authActions';
 import { toast } from './ui/use-toast';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 const FormSchema = z.object({
     username: z
@@ -41,6 +42,7 @@ const FormSchema = z.object({
 export default function LoginForm() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
+    const { setAuthModalOpen } = useDialogStore((state) => state);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -56,10 +58,11 @@ export default function LoginForm() {
         if (success) {
             toast({
                 title: 'Successfully Logged In',
-                description: 'You will be redirected to the app page',
-                duration: 2000,
+                description: 'You will be shortly redirected to the app page',
+                duration: 3000,
             });
             form.reset();
+            setAuthModalOpen();
             router.push('/main');
         } else {
             toast({

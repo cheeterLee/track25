@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { validateRequest } from './auth';
+import { validateRequest } from '../lib/auth';
 import { friendship, group, groupMember, invitation, user } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 

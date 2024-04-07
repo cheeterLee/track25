@@ -2,7 +2,7 @@ import ThemeToggle from './ThemeToggle';
 import LogoWrapper from './LogoWrapper';
 import { Button } from '@/components/ui/button';
 import AuthForm from './AuthForm';
-import { logout } from '@/lib/authActions';
+import { logout } from '@/actions/authActions';
 import { validateRequest } from '@/lib/auth';
 import { Menu, User } from 'lucide-react';
 import {

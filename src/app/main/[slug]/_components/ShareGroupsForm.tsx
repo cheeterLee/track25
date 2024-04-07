@@ -11,7 +11,7 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
-import { shareWithGroup, shareWithUser } from '@/lib/trackAccessActions';
+import { shareWithGroup, shareWithUser } from '@/actions/trackAccessActions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';

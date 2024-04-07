@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { deleteFriend } from '@/lib/friendActions';
+import { deleteFriend } from '@/actions/friendActions';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 
