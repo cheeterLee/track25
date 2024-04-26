@@ -23,7 +23,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
-            - name: Run Lint
+            - name: Run Code Formatting Checks
               run: pnpm lint
             
             - name: Run Unit Tests
