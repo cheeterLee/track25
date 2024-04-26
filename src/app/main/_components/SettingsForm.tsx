@@ -25,7 +25,13 @@ const FormSchema = z.object({
         .max(20, 'At most 10 chars'),
 });
 
-export default function SettingsForm({ user }: { user: User }) {
+export default function SettingsForm({
+    user,
+    isPremium,
+}: {
+    user: User;
+    isPremium: boolean;
+}) {
     const [inEditMode, setInEditMode] = useState<boolean>(false);
     const router = useRouter();
 
@@ -67,6 +73,7 @@ export default function SettingsForm({ user }: { user: User }) {
                     <Button
                         variant='outline'
                         onClick={() => setInEditMode(true)}
+                        disabled={!isPremium}
                     >
                         Edit Username
                     </Button>
