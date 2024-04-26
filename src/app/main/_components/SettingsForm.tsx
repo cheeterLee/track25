@@ -65,7 +65,7 @@ export default function SettingsForm({
     return (
         <div className='min-h-[250px] rounded-lg border-2 border-dashed border-slate-300 p-6'>
             {!inEditMode ? (
-                <div className='flex items-center justify-start gap-28'>
+                <div className='flex flex-col items-center justify-start gap-2 md:flex-row md:gap-28'>
                     <div className='w-30'>
                         Username:{' '}
                         <span className='font-semibold'>{user.username}</span>
@@ -81,7 +81,7 @@ export default function SettingsForm({
             ) : (
                 <Form {...form}>
                     <form
-                        className='flex w-full items-center gap-8'
+                        className='flex w-full flex-col items-center gap-8 md:flex-row'
                         onSubmit={form.handleSubmit(onSubmit)}
                     >
                         <FormField
