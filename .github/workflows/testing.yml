@@ -1,8 +1,7 @@
 name: Code Formatting checks and Testing
 
 on:
-    push:
-    pull_request:
+    workflow_call:
 jobs:
     linting-and-unit-testing:
         runs-on: ubuntu-latest
@@ -11,9 +10,11 @@ jobs:
                 node-version: [18]
         steps:
             - uses: actions/checkout@v3
+
             - uses: pnpm/action-setup@v3
               with:
                   version: 8
+
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
@@ -28,18 +29,22 @@ jobs:
             
             - name: Run Unit Tests
               run: pnpm test
+
     end-to-end-testing:
       needs: [linting-and-unit-testing]
       runs-on: ubuntu-22.04
       steps:
           - name: Checkout
             uses: actions/checkout@v4
+
           - name: Install pnpm
             run: npm install -g pnpm@8
+
           - name: Get pnpm store directory
             shell: bash
             run: |
               echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
           - name: Setup pnpm cache
             uses: actions/cache@v4
             with:
@@ -47,6 +52,7 @@ jobs:
               key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
               restore-keys: |
                 ${{ runner.os }}-pnpm-store-
+
           - name: Cypress run
             uses: cypress-io/github-action@v6       
             with:
