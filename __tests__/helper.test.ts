@@ -1,4 +1,4 @@
-import { getSlug, isGpxFile, getPremiumType } from '@/lib/helper';
+import { getSlug, isGpxFile, getPremiumType } from '../src/lib/helper';
 import Stripe from 'stripe';
 
 test('should get the slug of a gpx file', () => {
