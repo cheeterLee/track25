@@ -52,8 +52,12 @@ export default async function Navbar() {
                                 </Link>
                             </Button>
                             <Separator />
-                            <Button variant='link' size='lg'>
-                                <Link href='/home/about' className='text-lg'>
+                            <Button variant='link' size='lg' id='nav-about'>
+                                <Link
+                                    href='/home/about'
+                                    className='text-lg'
+                                    id='nav-about'
+                                >
                                     About
                                 </Link>
                             </Button>
