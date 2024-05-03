@@ -112,6 +112,13 @@ export default function UploadForm() {
                         setFileUploadDialogOpen();
                         setJustUploadedTrue();
                         setTrackToView(slug);
+                    } else if (data.code === 601) {
+                        setFileUploadDialogOpen();
+                        toast({
+                            variant: 'destructive',
+                            title: 'Upload limit reached',
+                            duration: 3000,
+                        });
                     } else {
                         toast({
                             variant: 'destructive',

@@ -6,8 +6,9 @@ import toGeoJson from '@mapbox/togeojson';
 import { Track, TrackReqParam } from '@/lib/type';
 // @ts-ignore
 import length from '@turf/length';
-import { access, accessList, track, upload } from '@/db/schema';
+import { access, accessList, track, upload, user } from '@/db/schema';
 import { validateRequest } from '@/lib/auth';
+import { eq } from 'drizzle-orm';
 // import { revalidatePath } from 'next/cache';
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -30,15 +31,24 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
     });
     // ===========================
-    const { user } = await validateRequest();
+    const { user: authUser } = await validateRequest();
 
-    if (!user) {
+    if (!authUser) {
         return NextResponse.json({ code: 400 });
+    }
+
+    const d = await db.select().from(user).where(eq(user.id, authUser.id));
+    const currUploads = await db
+        .select()
+        .from(upload)
+        .where(eq(upload.userId, authUser.id));
+    if (d[0].isPremium === false && currUploads.length === 5) {
+        return NextResponse.json({ code: 601 });
     }
 
     const param: Track = {
         slug: slug,
-        userId: user.id,
+        userId: authUser.id,
         path: geoJsonString,
         distance: Number(distance).toFixed(2),
         elevation: Number(elevation).toFixed(2),
@@ -64,11 +74,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     // add current user access
     await db.insert(access).values({
         accessListId: accessListId,
-        userId: user.id,
+        userId: authUser.id,
     });
 
     await db.insert(upload).values({
-        userId: user.id,
+        userId: authUser.id,
         trackId: trackId,
     });
 
