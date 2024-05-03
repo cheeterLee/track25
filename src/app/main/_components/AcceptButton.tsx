@@ -7,7 +7,7 @@ import {
     acceptGroupInvitation,
 } from '@/actions/friendActions';
 import { useRouter } from 'next/navigation';
-import { startTransition } from 'react';
+import { startTransition, useState } from 'react';
 
 export default function AcceptButton({
     type,
@@ -21,8 +21,10 @@ export default function AcceptButton({
     groupId: string | null;
 }) {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const handleOnClick = async () => {
+        setIsLoading(true);
         if (type === 'friend') {
             const { success } = await acceptFriendRequest(
                 invitationId,
@@ -50,11 +52,13 @@ export default function AcceptButton({
                 router.refresh();
             });
         }
+        setIsLoading(false);
     };
 
     return (
         <Button
             onClick={handleOnClick}
+            disabled={isLoading}
             variant='outline'
             className='sm:text-md text-xs'
         >

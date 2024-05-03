@@ -16,7 +16,7 @@ const plans: Plan[] = [
     {
         id: 'price_1Ou1HcJzk4dgmXDAiB86TAdI',
         name: 'Yearly',
-        priceStr: '30£ per month',
+        priceStr: '30£ per year',
     },
 ];
 

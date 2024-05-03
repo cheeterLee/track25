@@ -25,6 +25,7 @@ import DeleteFriendButton from './DeleteFriendButton';
 import CreateGroupForm from './CreateGroupForm';
 import QuitGroupButton from './QuitGroupButton';
 import { eq } from 'drizzle-orm';
+import CreateGroupDialog from './CreateGroupDialog';
 
 export default async function FriendsDialog() {
     const { user: authUser } = await validateRequest();
@@ -116,26 +117,7 @@ export default async function FriendsDialog() {
                                         />
                                     </DialogContent>
                                 </Dialog>
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button
-                                            variant='ghost'
-                                            className='w-full'
-                                        >
-                                            <div className='w-full text-left'>
-                                                Create new group
-                                            </div>
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className='flex max-h-[60vh] min-h-[60vh] min-w-[80vw] flex-col sm:min-h-[600px] sm:min-w-[800px]'>
-                                        <DialogHeader>
-                                            Create new group
-                                        </DialogHeader>
-                                        <CreateGroupForm
-                                            friends={data?.friendship}
-                                        />
-                                    </DialogContent>
-                                </Dialog>
+                                <CreateGroupDialog friends={data?.friendship} />
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

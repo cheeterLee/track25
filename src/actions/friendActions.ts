@@ -14,6 +14,32 @@ export async function createInvitation(
     if (!user) {
         return { success: false, error: 'no user' };
     }
+
+    const d = await db
+        .select()
+        .from(invitation)
+        .where(
+            and(
+                eq(invitation.senderId, user.id),
+                eq(invitation.receiverId, receiverId),
+                eq(invitation.status, 'pending'),
+            ),
+        );
+
+    if (d.length !== 0) {
+        if (type === d[0].type) {
+            return { success: false, error: `Already sent an ${type} request` };
+        }
+    }
+
+    if (d.length > 1) {
+        d.forEach((dt) => {
+            if (dt.groupId !== null && dt.groupId === groupId) {
+                return { success: false };
+            }
+        });
+    }
+
     await db.insert(invitation).values({
         senderId: user.id,
         receiverId: receiverId,

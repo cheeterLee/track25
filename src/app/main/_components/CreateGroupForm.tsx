@@ -18,9 +18,10 @@ import { createGroup } from '@/actions/friendActions';
 import { User } from '@/lib/type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { startTransition } from 'react';
+import { startTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useDialogStore } from '@/providers/DialogStoreProvider';
 
 interface Friend {
     id: string;
@@ -47,6 +48,8 @@ export default function CreateGroupForm({
     friends: Friend[] | undefined;
 }) {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { setCreateGroupDialogOpen } = useDialogStore((state) => state);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -57,15 +60,28 @@ export default function CreateGroupForm({
     });
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        const { success } = await createGroup(data.groupName, data.friends);
+        setIsLoading(true);
+        const { success, error } = await createGroup(
+            data.groupName,
+            data.friends,
+        );
         if (success) {
             toast({
                 title: 'Successfully sent group invitation',
+                duration: 2000,
+            });
+        } else {
+            toast({
+                variant: 'destructive',
+                description: error,
+                duration: 2000,
             });
         }
         startTransition(() => {
             router.refresh();
         });
+        setIsLoading(false);
+        setCreateGroupDialogOpen();
     }
 
     return (
@@ -182,7 +198,9 @@ export default function CreateGroupForm({
                         />
                     </div>
                     <div className='flex justify-end'>
-                        <Button type='submit'>Submit</Button>
+                        <Button disabled={isLoading} type='submit'>
+                            {isLoading ? '...' : 'Submit'}
+                        </Button>
                     </div>
                 </form>
             </Form>
