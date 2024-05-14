@@ -30,8 +30,15 @@ export default async function TrackDetail({
         redirect('/');
     }
 
-    const track: Track | undefined = await db.query.track.findFirst({
+    const track = await db.query.track.findFirst({
         where: (track, { eq }) => eq(track.slug, params.slug),
+        with: {
+            owner: {
+                columns: {
+                    username: true,
+                },
+            },
+        },
     });
 
     const userWithAccess = await db.query.accessList.findFirst({
@@ -141,7 +148,7 @@ export default async function TrackDetail({
                             <AvatarImage src='https://github.com/shadcn.png' />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
-                        {user.username}
+                        {track?.owner.username}
                     </span>
                 </div>
                 <div className='mt-4 flex w-full items-center justify-between px-4'>
